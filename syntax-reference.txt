@@ -48,7 +48,7 @@ package com.npci.project1.module1;
 4. import Statement
 --------------------------------------------
 
-why we use import statement?
+Why we use import statement?
   
   -> to use types of other packages in the current package
 
@@ -88,12 +88,12 @@ public class A{
 What is class and object?
 --------------------------------------------
 
-what is a class?
+What is a class?
 
    -> class is a blue print or template or prototype  which is used
         to create objects.
 
-what is an object?
+What is an object?
 
    -> data|info|attributes|properties     => state
    -> actions|functions|method|operations => behavior
@@ -171,9 +171,9 @@ enum Enum_name {
 d. annotation syntax
 ----------------------------------------------
 
-why we need annotation?
+Why we need annotation?
    -> to provide meta-data info to compiler or runtime environment or frameworks( e,g Junit)
-
+    -> to influence program behavior at compile-time or runtime or framework level
    e.g Junit framework uses @Test annotation to identify test methods
 
    @Test
@@ -185,7 +185,7 @@ why we need annotation?
 e. record syntax
 ----------------------------------------------
 
-why we need record?
+Why we need record?
    -> to represent immutable data carrier objects
 
 
@@ -196,7 +196,7 @@ why we need record?
 Why we need variables?
    -> to store data temporarily in the memory during program execution
 
-types of variables in java by data-type
+types of variables by 'data-type'
 
     1. primitive data-type variables aka values
         -> byte, short, int, long, float, double, char, boolean
@@ -207,7 +207,7 @@ types of variables in java by data-type
         int age=43;
         Student s1 = new Student();
 
-types of variables in java by scope/lifetime
+types of variables by 'scope/lifetime'
 
     1. local variables
         -> declared inside method/constructor/block
