@@ -8,7 +8,7 @@ public class Account {
     // fields
     private String accountNumber;// null
     private String holderName; // null
-    private double balance; // 0.0
+    protected double balance; // 0.0
 
     // constructor(s)
     public Account(String accountNumber) {
