@@ -1,4 +1,4 @@
-package com.example;
+package com.example.mini;
 
 public class ValueTypes {
     public static void main(String[] args) {
