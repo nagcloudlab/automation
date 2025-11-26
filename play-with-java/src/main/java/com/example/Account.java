@@ -1,24 +1,24 @@
-package com.example; // package declaration
+package com.example;
 
-// import statements (if any) would go here
-// import java.lang.*;
+/**
+ * author: Nagendra Kumar
+ */
 
-// Public Type ( class declaration )
 public class Account {
     // fields
-    String accountNumber;// null
-    String holderName; // null
-    double balance; // 0.0
+    private String accountNumber;// null
+    private String holderName; // null
+    private double balance; // 0.0
 
     // constructor(s)
-    Account(String accountNumber) {
+    public Account(String accountNumber) {
         // validation logics
         // init logics
         // this.accountNumber = accountNumber;
         this(accountNumber, "Unknown", 0.0);
     }
 
-    Account(String accountNumber, String holderName) {
+    public Account(String accountNumber, String holderName) {
         // validation logics
         // init logics
         // this.accountNumber = accountNumber;
@@ -26,7 +26,7 @@ public class Account {
         this(accountNumber, holderName, 0.0);
     }
 
-    Account(String accountNumber, String holderName, double balance) {
+    public Account(String accountNumber, String holderName, double balance) {
         // validation logics
         // init logics
         this.accountNumber = accountNumber;
@@ -34,17 +34,14 @@ public class Account {
         this.balance = balance;
     }
 
-    // methods
-
     // Method to deposit money
-    void deposit(double amount) {
+    public void deposit(double amount) {
         this.balance = this.balance + amount;
         System.out.println("Deposited Rs." + amount + " | New Balance: Rs." + this.balance);
     }
 
     // Method to withdraw money
-    // Method to withdraw money
-    void withdraw(double amount) {
+    public void withdraw(double amount) {
         if (amount <= this.balance) {
             this.balance = this.balance - amount;
             System.out.println("Withdrawn Rs." + amount + " | New Balance: Rs." + this.balance);
@@ -53,9 +50,27 @@ public class Account {
         }
     }
 
-    // Method to check balance
-    void checkBalance() {
-        System.out.println("Current Balance: Rs." + this.balance);
+    // Getters
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public String getHolderName() {
+        return holderName;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    // setters
+    public void setHolderName(String newName) {
+        if (newName != null && newName.length() > 0) {
+            this.holderName = newName;
+            System.out.println("Name updated successfully.");
+        } else {
+            System.out.println("Invalid name!");
+        }
     }
 
 }

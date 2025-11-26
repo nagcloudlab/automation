@@ -1,0 +1,13 @@
+
+
+
+proj
+    |
+    |-- p1
+    |   - A.java
+    |   - B.java extends A
+    |   - C.java
+    |
+    |-- p2
+        - D.java extends C
+        - E.java
