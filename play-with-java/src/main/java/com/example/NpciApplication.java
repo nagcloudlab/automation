@@ -11,7 +11,6 @@ public class NpciApplication {
         Account fdAccount = new FixedDepositAccount("FD123456", "Alice Johnson", 20000.00, 12, 6);
 
         // ---- Payment Services ----
-
         PaymentService upiPaymentService = new UPIPayment("s1@oksbi", "r1@okicic", 100.00, "1234");
         PaymentService impsPaymentService = new IMPSPayment("9876543210", "0123456789", "CAN00000163", 100.00);
 
