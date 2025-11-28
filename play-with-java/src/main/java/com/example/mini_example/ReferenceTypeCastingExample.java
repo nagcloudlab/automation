@@ -53,7 +53,7 @@ class Mechanic {
     }
 }
 
-public class ReferenceTypeCasting {
+public class ReferenceTypeCastingExample {
 
     public static void main(String[] args) {
 

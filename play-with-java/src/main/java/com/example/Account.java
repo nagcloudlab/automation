@@ -1,9 +1,5 @@
 package com.example;
 
-/**
- * author: Nagendra Kumar
- */
-
 public abstract class Account {
 
     // fields
@@ -35,7 +31,6 @@ public abstract class Account {
         this.balance = balance;
     }
 
-    // method overloading
     // version 1: Simple deposit
     public void deposit(double amount) {
         this.balance = this.balance + amount;
