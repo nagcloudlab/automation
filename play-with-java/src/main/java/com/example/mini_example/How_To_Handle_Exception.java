@@ -6,7 +6,8 @@ package com.example.mini_example;
 // team-1 : TransferService
 //------------------------------------------
 
-class InsufficientFundsException extends Throwable {
+// Checked vs Unchecked Exceptions
+class InsufficientFundsException extends Exception {
     String message;
 
     public InsufficientFundsException(String message) {
@@ -15,7 +16,7 @@ class InsufficientFundsException extends Throwable {
 }
 
 class TransferService {
-    public void transferFunds(String fromAccount, String toAccount, double amount) throws InsufficientFundsException {
+    public void transferFunds(String fromAccount, String toAccount, double amount)throws InsufficientFundsException  {
         // Load account details (simulated) ...
         double fromAccountBalance = 100.0; // Simulated balance
         if (amount > fromAccountBalance) {
@@ -27,7 +28,7 @@ class TransferService {
 
 
 //------------------------------------------
-// team-2 : TicketBookingService
+// team-1 : TicketBookingService
 //------------------------------------------
 
 class TicketBookingService {
@@ -38,15 +39,10 @@ class TicketBookingService {
         if (movie == null || movie.isEmpty()) {
         }
         // Simulate payment processing
-        try {
-            transferService.transferFunds("userAccount", "theaterAccount", 1000.0);
-            System.out.println("Ticket booked for " + user + " to watch " + movie);
+        try{
+            transferService.transferFunds("UserAccount", "TheaterAccount", 150.0);
+            System.out.println("Ticket booked successfully for " + user + " to watch " + movie);
         } catch (InsufficientFundsException ife) {
-            //.....
-            // Plan B : Handle the exception gracefully
-            // Log & re-throw
-            // release resources ( e.g DB connections, file handles etc.,)
-            // friendly message to user
             System.out.println("Failed to book ticket: " + ife.message);
         }
     }
