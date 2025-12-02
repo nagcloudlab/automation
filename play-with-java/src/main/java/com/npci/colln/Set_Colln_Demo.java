@@ -32,6 +32,7 @@ public class Set_Colln_Demo {
 //        });
         //Set<Account> accounts = new HashSet<>();
         Set<Account> accounts = new LinkedHashSet<>();
+
         accounts.add(aliceAccount);
         accounts.add(charlieAccount);
         accounts.add(bobAccount);
