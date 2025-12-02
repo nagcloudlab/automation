@@ -1,15 +1,29 @@
 package com.npci.colln;
 
-public class Account extends Object implements Comparable<Account> {
+public class Account extends Object /*implements Comparable<Account>*/ {
 
     private String accountNumber; // // natural property for sorting
     private String accountHolderName;
     private double balance;
 
+//    @Override
+//    public int compareTo(Account o) {
+//        return this.accountNumber.compareTo(o.accountNumber); // 0 , +ve , -ve
+//    }
+
+
     @Override
-    public int compareTo(Account o) {
-        return this.accountNumber.compareTo(o.accountNumber); // 0 , +ve , -ve
+    public int hashCode() {
+        return accountNumber.hashCode();
     }
+
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Account account = (Account) obj;
+        return accountNumber.equals(account.accountNumber);
+    }
+
 
     @Override
     public String toString() {

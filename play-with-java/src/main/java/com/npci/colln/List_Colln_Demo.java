@@ -2,7 +2,7 @@ package com.npci.colln;
 
 import java.util.*;
 
-public class ListCollnDemo {
+public class List_Colln_Demo {
     public static void main(String[] args) {
 
         ArrayList<Account> accounts = new ArrayList<>(); // box

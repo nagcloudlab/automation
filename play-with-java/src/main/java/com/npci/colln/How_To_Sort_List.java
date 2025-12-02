@@ -39,7 +39,7 @@ public class How_To_Sort_List {
         accounts.add(new Account("ACC003", "Charlie", 1000));
 
         displayAccounts("Before Sorting:", accounts);
-        Collections.sort(accounts);
+        //Collections.sort(accounts);
         displayAccounts("After Sorting by account number (natural order):", accounts);
 
         // sort by account by balance
