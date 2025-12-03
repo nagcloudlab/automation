@@ -8,6 +8,7 @@ public class Array_Example {
         String[] names = {"John", "Jane", "Alice", "Bob", "Charlie"};
 
         // Limitation with Array
+        //------------------------------
         // fixed size
         // homogeneous data type
         // no built-in methods for manipulation

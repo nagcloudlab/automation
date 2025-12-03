@@ -1,4 +1,4 @@
-package com.npci.colln;
+package com.npci.mini;
 
 public class Account extends Object /*implements Comparable<Account>*/ {
 

@@ -1,9 +1,7 @@
-package com.npci.colln;
+package com.npci.mini;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class Set_Colln_Demo {
     public static void main(String[] args) {

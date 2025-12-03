@@ -1,4 +1,4 @@
-package com.npci.colln;
+package com.npci.mini;
 
 import java.util.*;
 

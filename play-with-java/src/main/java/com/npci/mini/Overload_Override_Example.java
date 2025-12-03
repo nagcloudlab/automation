@@ -18,7 +18,7 @@ package com.npci.mini;
 // 4. same or more visible access modifier  
 
 // author : Nag
-abstract class Account {
+abstract class Acc {
     // v1
     public void deposit(double aount, int pin) {
         System.out.println("Account Deposit");
@@ -33,7 +33,7 @@ abstract class Account {
 }
 
 // author: Boy team
-class SavingsAccount extends Account {
+class SavingsAccount extends Acc {
     // v1
     @Override
     public void withdraw(double amount, int pin) {
@@ -47,7 +47,7 @@ class SavingsAccount extends Account {
 }
 
 // team: Girl team
-class CurrentAccount extends Account {
+class CurrentAccount extends Acc {
     @Override
     public void withdraw(double amount, int pin) {
         System.out.println("CurrentAccount Withdraw");
@@ -55,7 +55,7 @@ class CurrentAccount extends Account {
 }
 
 class PaymentGateway {
-    public void witgdrawFunds(Account account, double amount, int pin) {
+    public void witgdrawFunds(Acc account, double amount, int pin) {
         account.withdraw(amount, pin);
     }
 }
