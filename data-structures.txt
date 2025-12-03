@@ -1,0 +1,74 @@
+
+
+
+data-structure
+----------------
+
+memory-efficient organization and storage of data in a computer
+
+1. single element
+    - byte,short,int,long,float,double,char,boolean
+2. multi-element
+    - array
+
+-----------------------------------------------
+
+collection(s)
+
+    -> ready-used data-structures with cool algorithms
+
+-------------------------------------------------
+1. List
+
+    -> index-based
+    -> ordered
+    -> to hold duplicates
+
+2. Set
+
+    -> no index
+    -> un-ordered
+    -> unique elements
+
+3. Map
+
+    -> with user-defined indentity ( key ) , if we store data ( value )
+
+    -> key-> unique
+    -> value -> may duplicate
+
+4. Queue
+
+    -> FIFO
+
+-------------------------------------------------    
+collection's classes => java.util.*
+--------------------------------------------------
+
+
+1. List
+
+    - Vector => dynamic-array ( thread-safe / synchronized ) -> slow
+    - ArrayList => dynamic-array  -> ( non-thread-safe / non-synchronized ) -> fast
+    - LinkedList => DLL ( doubly linked list )
+
+2. Set
+
+    -> TreeSet => b-tree -> sorted ( Un-ordered ) ( slow )
+    -> HashSet => hash-table  ->un-ordered( fast )
+    -> LinkedHashSet => hash-table + DLL -> ordered ( slow)
+
+3. Map
+
+    -> TreeMap
+    -> HashMap
+    -> LinkedHashMap
+    -> Hashtable ( thread-safe )
+
+4. Queue
+
+    -> LinkedList
+    -> PrioirtyQueue
+    -> Deque
+
+-------------------------------------------------------------    
