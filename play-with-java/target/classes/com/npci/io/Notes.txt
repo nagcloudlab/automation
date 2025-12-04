@@ -1,0 +1,35 @@
+
+
+
+IO sources
+--------------
+
+    -> standard input/output
+    -> files
+    -> n/w sockets
+    -> databases
+
+
+-----------------------------
+IO channels
+ ----------------------------
+ 8-bit or byte-stream
+ 16-bit   or character-stream
+ ----------------------------
+
+ java.io package
+ ----------------------------
+ 1. Byte Streams
+ ----------------------------
+  -> InputStream (abstract class)
+     -> FileInputStream
+  --> OutputStream (abstractclass)
+     -> FileOutputStream
+
+-----------------------------
+ 2. Character Streams
+ ----------------------------
+  -> Reader (abstract class)
+     -> FileReader
+  --> Writer (abstractclass)
+     -> FileWriter

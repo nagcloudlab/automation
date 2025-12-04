@@ -15,12 +15,3 @@ Data Types in Java
 -> complex-types/reference-> objects
 
 -----------------------------------
-
-Java Build Tools
-------------------------------
-
--> Maven => XML-based configuration 
--> Gradle => Groovy/Kotlin-based configuration
--> SBT => Scala-based configuration
-
------------------------------------
