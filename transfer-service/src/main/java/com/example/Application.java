@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.repository.AccountRepository;
+import com.example.repository.AccountRepositoryFactory;
 import com.example.service.UPITransferService;
 
 public class Application {
@@ -10,7 +12,8 @@ public class Application {
         // Initialize Phase
         //---------------------------------
         System.out.println("-".repeat(50));
-        UPITransferService upiTransferService = new UPITransferService();
+        AccountRepository sqlAccountRepository = AccountRepositoryFactory.getAccountRepository("sql");
+        UPITransferService upiTransferService = new UPITransferService(sqlAccountRepository);
 
         System.out.println("-".repeat(50));
         //---------------------------------

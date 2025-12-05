@@ -2,7 +2,7 @@ package com.example.repository;
 
 import com.example.model.Account;
 
-public class SqlAccountRepository {
+public class SqlAccountRepository implements AccountRepository {
 
     public SqlAccountRepository(){
         System.out.println("SqlAccountRepository instance created.");
