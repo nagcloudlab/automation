@@ -17,33 +17,33 @@ Before writing any tests, your code must be **testable**. The current code has a
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   Current Code:                                                 │
-│   ┌─────────────────────┐      ┌─────────────────────┐         │
+│   ┌─────────────────────┐      ┌─────────────────────┐          │
 │   │ UPITransferService  │──────│ SqlAccountRepository │         │
 │   │                     │ new  │                      │         │
 │   │ transfer() {        │─────▶│ (Real Database)      │         │
 │   │   new SqlAccount... │      │                      │         │
-│   │ }                   │      └─────────────────────┘         │
+│   │ }                   │      └─────────────────────┘          │
 │   └─────────────────────┘                                       │
 │                                                                 │
-│   ❌ PROBLEM: Cannot test UPITransferService without            │
+│   ❌ PROBLEM: Cannot test UPITransferService without             │
 │              hitting the real database!                         │
 │                                                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │   Refactored Code:                                              │
-│   ┌─────────────────────┐      ┌───────────────────┐           │
-│   │ UPITransferService  │      │<<interface>>      │           │
-│   │                     │─────▶│AccountRepository  │           │
-│   │ constructor(repo)   │      └───────────────────┘           │
+│   ┌─────────────────────┐      ┌───────────────────┐            │
+│   │ UPITransferService  │      │<<interface>>      │            │
+│   │                     │─────▶│AccountRepository  │            │
+│   │ constructor(repo)   │      └───────────────────┘            │
 │   │ transfer() {        │              ▲                        │
-│   │   this.repo.load... │              │ implements            │
-│   │ }                   │      ┌───────┴───────────┐           │
-│   └─────────────────────┘      │                   │           │
-│                          ┌─────┴─────┐     ┌───────┴───────┐   │
-│                          │ SqlAccount│     │ MockAccount   │   │
-│                          │ Repository│     │ Repository    │   │
-│                          │ (Real DB) │     │ (For Tests)   │   │
-│                          └───────────┘     └───────────────┘   │
+│   │   this.repo.load... │              │ implements             │
+│   │ }                   │      ┌───────┴───────────┐            │
+│   └─────────────────────┘      │                   │            │
+│                          ┌─────┴─────┐     ┌───────┴───────┐    │
+│                          │ SqlAccount│     │ MockAccount   │    │
+│                          │ Repository│     │ Repository    │    │
+│                          │ (Real DB) │     │ (For Tests)   │    │
+│                          └───────────┘     └───────────────┘    │
 │                                                                 │
 │   ✅ SOLUTION: Inject dependency through constructor            │
 │               Tests can inject mock, Production uses real DB    │

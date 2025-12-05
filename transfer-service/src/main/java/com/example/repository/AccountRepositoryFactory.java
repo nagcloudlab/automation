@@ -7,8 +7,6 @@ public class AccountRepositoryFactory {
     public static AccountRepository getAccountRepository(String type) {
         if (type.equalsIgnoreCase("sql")) {
             return new SqlAccountRepository();
-        } else if (type.equalsIgnoreCase("mock")) {
-            return new MockAccountRepository();
         } else {
             throw new IllegalArgumentException("Unknown repository type: " + type);
         }
