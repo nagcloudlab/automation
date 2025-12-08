@@ -32,7 +32,7 @@ public class Account implements Comparable<Account> {
         if (amount > balance) {
             throw new IllegalArgumentException("Insufficient balance");
         }
-        balance -= amount;
+        balance += amount;
     }
 
     public void credit(double amount) {
@@ -55,8 +55,10 @@ public class Account implements Comparable<Account> {
     // equals and hashCode methods for object comparison
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Account account = (Account) o;
         return Double.compare(account.balance, balance) == 0 &&
                 accountId.equals(account.accountId) &&
