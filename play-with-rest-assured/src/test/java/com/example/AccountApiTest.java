@@ -1,22 +1,24 @@
 package com.example;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static io.restassured.RestAssured.given;
 
 public class AccountApiTest {
 
-    @Test
-    public void testGetAccountExist() {
-        // Test implementation goes here using RestAssured library
-        String endpoint = "http://localhost:8080/api/v1/accounts/234235423/exists";
-
+    @ParameterizedTest
+    @ValueSource(strings = {"A001", "A002", "A003"})
+    public void testGetAccountExist(String accountId) {
         given()
+                .baseUri("http://localhost:8080")
+                .basePath("/api/v1/accounts")
+                .pathParam("accountId", accountId)
                 .when()
-                .get(endpoint)
+                .get("/{accountId}")
                 .then()
-                .statusCode(404);
-
+                .statusCode(200);
     }
 
 }
