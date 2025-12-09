@@ -1,0 +1,4 @@
+
+
+cd transfer-service
+mvn clean spring-boot:run
