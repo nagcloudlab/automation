@@ -1,0 +1,34 @@
+
+
+steps to design REST APIs:
+--------------------------
+
+step-1: know the resource(s) / action(s)
+
+        - transfer
+
+step-2: define the endpoints
+
+         - /api/v1/transfer
+
+step-3: define the HTTP methods for each endpoint
+
+        - GET /api/v1/accounts
+        - POST /api/v1/transfer
+
+step-4: define the request and response formats
+
+        e.g /api/v1/transfer
+        - request:
+            {
+            "fromAccId": "123456",
+            "toAccId": "654321",
+            "amount": 100.00
+            }
+        - response:
+            {
+            "status": "success",
+            "transaction_id": "abc123"
+            }
+
+

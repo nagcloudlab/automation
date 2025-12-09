@@ -1,0 +1,488 @@
+##############################################################################
+# CI/CD Pipeline Configuration Examples - LEVEL 9
+# 
+# ╔═══════════════════════════════════════════════════════════════════════╗
+# ║                   CI/CD TAG INTEGRATION                               ║
+# ╠═══════════════════════════════════════════════════════════════════════╣
+# ║  This file contains examples for integrating JUnit 5 tags with        ║
+# ║  various CI/CD platforms.                                             ║
+# ║                                                                       ║
+# ║  Covered Platforms:                                                   ║
+# ║  • GitHub Actions                                                     ║
+# ║  • GitLab CI/CD                                                       ║
+# ║  • Jenkins Pipeline                                                   ║
+# ║  • Azure DevOps                                                       ║
+# ╚═══════════════════════════════════════════════════════════════════════╝
+##############################################################################
+
+
+#=============================================================================
+# GITHUB ACTIONS EXAMPLE
+# File: .github/workflows/test.yml
+#=============================================================================
+# 
+# name: Test Pipeline
+# 
+# on:
+#   push:
+#     branches: [main, develop]
+#   pull_request:
+#     branches: [main]
+#   schedule:
+#     # Nightly at 2 AM UTC
+#     - cron: '0 2 * * *'
+# 
+# jobs:
+#   #---------------------------------------------------------------------------
+#   # Unit Tests - Run on every push
+#   #---------------------------------------------------------------------------
+#   unit-tests:
+#     runs-on: ubuntu-latest
+#     name: Unit Tests
+#     steps:
+#       - uses: actions/checkout@v4
+#       
+#       - name: Set up JDK 17
+#         uses: actions/setup-java@v4
+#         with:
+#           java-version: '17'
+#           distribution: 'temurin'
+#           cache: 'maven'
+#       
+#       - name: Run Unit Tests
+#         run: mvn test -Dgroups="unit | fast" -DexcludedGroups="slow"
+#       
+#       - name: Upload Test Results
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: unit-test-results
+#           path: target/surefire-reports/
+# 
+#   #---------------------------------------------------------------------------
+#   # Integration Tests - Run on PR and main branch
+#   #---------------------------------------------------------------------------
+#   integration-tests:
+#     runs-on: ubuntu-latest
+#     name: Integration Tests
+#     needs: unit-tests
+#     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+#     steps:
+#       - uses: actions/checkout@v4
+#       
+#       - name: Set up JDK 17
+#         uses: actions/setup-java@v4
+#         with:
+#           java-version: '17'
+#           distribution: 'temurin'
+#           cache: 'maven'
+#       
+#       - name: Run Integration Tests
+#         run: mvn test -Dgroups="integration" -DexcludedGroups="slow | manual"
+# 
+#   #---------------------------------------------------------------------------
+#   # Smoke Tests - Run before deployment
+#   #---------------------------------------------------------------------------
+#   smoke-tests:
+#     runs-on: ubuntu-latest
+#     name: Smoke Tests
+#     needs: [unit-tests, integration-tests]
+#     if: github.ref == 'refs/heads/main'
+#     steps:
+#       - uses: actions/checkout@v4
+#       
+#       - name: Set up JDK 17
+#         uses: actions/setup-java@v4
+#         with:
+#           java-version: '17'
+#           distribution: 'temurin'
+#           cache: 'maven'
+#       
+#       - name: Run Smoke Tests
+#         run: mvn test -Dgroups="smoke | critical"
+# 
+#   #---------------------------------------------------------------------------
+#   # Nightly Tests - Comprehensive testing
+#   #---------------------------------------------------------------------------
+#   nightly-tests:
+#     runs-on: ubuntu-latest
+#     name: Nightly Full Test Suite
+#     if: github.event.schedule
+#     steps:
+#       - uses: actions/checkout@v4
+#       
+#       - name: Set up JDK 17
+#         uses: actions/setup-java@v4
+#         with:
+#           java-version: '17'
+#           distribution: 'temurin'
+#           cache: 'maven'
+#       
+#       - name: Run All Tests
+#         run: mvn test -DexcludedGroups="manual"
+#       
+#       - name: Run Performance Tests
+#         run: mvn test -Dgroups="performance"
+# 
+#   #---------------------------------------------------------------------------
+#   # Security Tests - Weekly scan
+#   #---------------------------------------------------------------------------
+#   security-tests:
+#     runs-on: ubuntu-latest
+#     name: Security Tests
+#     if: github.event.schedule && contains(github.event.schedule, 'weekly')
+#     steps:
+#       - uses: actions/checkout@v4
+#       
+#       - name: Set up JDK 17
+#         uses: actions/setup-java@v4
+#         with:
+#           java-version: '17'
+#           distribution: 'temurin'
+#           cache: 'maven'
+#       
+#       - name: Run Security Tests
+#         run: mvn test -Dgroups="security"
+
+
+#=============================================================================
+# GITLAB CI/CD EXAMPLE  
+# File: .gitlab-ci.yml
+#=============================================================================
+# 
+# stages:
+#   - unit
+#   - integration
+#   - smoke
+#   - performance
+# 
+# variables:
+#   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+# 
+# cache:
+#   paths:
+#     - .m2/repository/
+# 
+# #---------------------------------------------------------------------------
+# # Unit Tests Stage
+# #---------------------------------------------------------------------------
+# unit_tests:
+#   stage: unit
+#   image: maven:3.9-eclipse-temurin-17
+#   script:
+#     - mvn test -Dgroups="unit | fast" -DexcludedGroups="slow"
+#   artifacts:
+#     when: always
+#     reports:
+#       junit: target/surefire-reports/*.xml
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "push"
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+# 
+# #---------------------------------------------------------------------------
+# # Integration Tests Stage
+# #---------------------------------------------------------------------------
+# integration_tests:
+#   stage: integration
+#   image: maven:3.9-eclipse-temurin-17
+#   script:
+#     - mvn test -Dgroups="integration" -DexcludedGroups="slow | manual"
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#     - if: $CI_COMMIT_BRANCH == "main"
+#   needs:
+#     - unit_tests
+# 
+# #---------------------------------------------------------------------------
+# # Smoke Tests Stage (Deployment Gate)
+# #---------------------------------------------------------------------------
+# smoke_tests:
+#   stage: smoke
+#   image: maven:3.9-eclipse-temurin-17
+#   script:
+#     - mvn test -Dgroups="smoke | critical"
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == "main"
+#   needs:
+#     - integration_tests
+# 
+# #---------------------------------------------------------------------------
+# # Performance Tests (Nightly)
+# #---------------------------------------------------------------------------
+# performance_tests:
+#   stage: performance
+#   image: maven:3.9-eclipse-temurin-17
+#   script:
+#     - mvn test -Dgroups="performance | slow"
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "schedule"
+#   timeout: 2h
+# 
+# #---------------------------------------------------------------------------
+# # Banking Domain Tests
+# #---------------------------------------------------------------------------
+# banking_tests:
+#   stage: integration
+#   image: maven:3.9-eclipse-temurin-17
+#   script:
+#     - mvn test -Dgroups="banking" -DexcludedGroups="manual | slow"
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == "main"
+#   needs:
+#     - unit_tests
+
+
+#=============================================================================
+# JENKINS PIPELINE EXAMPLE
+# File: Jenkinsfile
+#=============================================================================
+# 
+# pipeline {
+#     agent {
+#         docker {
+#             image 'maven:3.9-eclipse-temurin-17'
+#             args '-v $HOME/.m2:/root/.m2'
+#         }
+#     }
+#     
+#     environment {
+#         MAVEN_OPTS = '-Xmx1024m'
+#     }
+#     
+#     stages {
+#         //---------------------------------------------------------------
+#         // Stage: Unit Tests (Every Build)
+#         //---------------------------------------------------------------
+#         stage('Unit Tests') {
+#             steps {
+#                 sh 'mvn test -Dgroups="unit | fast" -DexcludedGroups="slow"'
+#             }
+#             post {
+#                 always {
+#                     junit 'target/surefire-reports/*.xml'
+#                 }
+#             }
+#         }
+#         
+#         //---------------------------------------------------------------
+#         // Stage: Integration Tests (PR and Main Branch)
+#         //---------------------------------------------------------------
+#         stage('Integration Tests') {
+#             when {
+#                 anyOf {
+#                     branch 'main'
+#                     changeRequest()
+#                 }
+#             }
+#             steps {
+#                 sh 'mvn test -Dgroups="integration" -DexcludedGroups="slow | manual"'
+#             }
+#         }
+#         
+#         //---------------------------------------------------------------
+#         // Stage: Smoke Tests (Deployment Gate)
+#         //---------------------------------------------------------------
+#         stage('Smoke Tests') {
+#             when {
+#                 branch 'main'
+#             }
+#             steps {
+#                 sh 'mvn test -Dgroups="smoke | critical"'
+#             }
+#         }
+#         
+#         //---------------------------------------------------------------
+#         // Stage: Performance Tests (Nightly Trigger)
+#         //---------------------------------------------------------------
+#         stage('Performance Tests') {
+#             when {
+#                 triggeredBy 'TimerTrigger'
+#             }
+#             steps {
+#                 sh 'mvn test -Dgroups="performance"'
+#             }
+#         }
+#         
+#         //---------------------------------------------------------------
+#         // Stage: Banking Tests
+#         //---------------------------------------------------------------
+#         stage('Banking Domain Tests') {
+#             when {
+#                 branch 'main'
+#             }
+#             parallel {
+#                 stage('P2P Tests') {
+#                     steps {
+#                         sh 'mvn test -Dgroups="p2p"'
+#                     }
+#                 }
+#                 stage('P2M Tests') {
+#                     steps {
+#                         sh 'mvn test -Dgroups="p2m"'
+#                     }
+#                 }
+#                 stage('Balance Tests') {
+#                     steps {
+#                         sh 'mvn test -Dgroups="balance"'
+#                     }
+#                 }
+#             }
+#         }
+#     }
+#     
+#     triggers {
+#         // Nightly build at 2 AM
+#         cron('0 2 * * *')
+#     }
+#     
+#     post {
+#         always {
+#             cleanWs()
+#         }
+#         failure {
+#             emailext (
+#                 subject: "FAILED: Job '${env.JOB_NAME}'",
+#                 body: "Build failed. Check console output at ${env.BUILD_URL}",
+#                 to: 'team@example.com'
+#             )
+#         }
+#     }
+# }
+
+
+#=============================================================================
+# AZURE DEVOPS PIPELINE EXAMPLE
+# File: azure-pipelines.yml
+#=============================================================================
+# 
+# trigger:
+#   branches:
+#     include:
+#       - main
+#       - develop
+# 
+# pr:
+#   branches:
+#     include:
+#       - main
+# 
+# schedules:
+#   - cron: "0 2 * * *"
+#     displayName: Nightly Build
+#     branches:
+#       include:
+#         - main
+#     always: true
+# 
+# pool:
+#   vmImage: 'ubuntu-latest'
+# 
+# variables:
+#   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+#   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+# 
+# stages:
+# #---------------------------------------------------------------------------
+# # Stage: Unit Tests
+# #---------------------------------------------------------------------------
+# - stage: UnitTests
+#   displayName: 'Unit Tests'
+#   jobs:
+#   - job: RunUnitTests
+#     displayName: 'Run Unit Tests'
+#     steps:
+#     - task: JavaToolInstaller@0
+#       inputs:
+#         versionSpec: '17'
+#         jdkArchitectureOption: 'x64'
+#         jdkSourceOption: 'PreInstalled'
+#     
+#     - task: Cache@2
+#       inputs:
+#         key: 'maven | "$(Agent.OS)" | pom.xml'
+#         restoreKeys: |
+#           maven | "$(Agent.OS)"
+#         path: $(MAVEN_CACHE_FOLDER)
+#       displayName: Cache Maven packages
+#     
+#     - task: Maven@4
+#       inputs:
+#         mavenPomFile: 'pom.xml'
+#         goals: 'test'
+#         options: '-Dgroups="unit | fast" -DexcludedGroups="slow"'
+#         publishJUnitResults: true
+#         testResultsFiles: '**/surefire-reports/TEST-*.xml'
+# 
+# #---------------------------------------------------------------------------
+# # Stage: Integration Tests
+# #---------------------------------------------------------------------------
+# - stage: IntegrationTests
+#   displayName: 'Integration Tests'
+#   dependsOn: UnitTests
+#   condition: and(succeeded(), or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/main')))
+#   jobs:
+#   - job: RunIntegrationTests
+#     displayName: 'Run Integration Tests'
+#     steps:
+#     - task: Maven@4
+#       inputs:
+#         mavenPomFile: 'pom.xml'
+#         goals: 'test'
+#         options: '-Dgroups="integration" -DexcludedGroups="slow | manual"'
+#         publishJUnitResults: true
+# 
+# #---------------------------------------------------------------------------
+# # Stage: Smoke Tests (Pre-Deployment)
+# #---------------------------------------------------------------------------
+# - stage: SmokeTests
+#   displayName: 'Smoke Tests'
+#   dependsOn: IntegrationTests
+#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+#   jobs:
+#   - job: RunSmokeTests
+#     displayName: 'Run Smoke Tests'
+#     steps:
+#     - task: Maven@4
+#       inputs:
+#         mavenPomFile: 'pom.xml'
+#         goals: 'test'
+#         options: '-Dgroups="smoke | critical"'
+# 
+# #---------------------------------------------------------------------------
+# # Stage: Performance Tests (Nightly)
+# #---------------------------------------------------------------------------
+# - stage: PerformanceTests
+#   displayName: 'Performance Tests'
+#   condition: eq(variables['Build.Reason'], 'Schedule')
+#   jobs:
+#   - job: RunPerformanceTests
+#     displayName: 'Run Performance Tests'
+#     timeoutInMinutes: 120
+#     steps:
+#     - task: Maven@4
+#       inputs:
+#         mavenPomFile: 'pom.xml'
+#         goals: 'test'
+#         options: '-Dgroups="performance | slow"'
+
+
+#=============================================================================
+# QUICK REFERENCE: COMMON TAG COMMANDS
+#=============================================================================
+# 
+# Command                                          Description
+# ────────────────────────────────────────────────────────────────────────────
+# mvn test -Dgroups=unit                           Only unit tests
+# mvn test -Dgroups=integration                    Only integration tests
+# mvn test -Dgroups="unit | integration"           Unit OR integration
+# mvn test -Dgroups="unit & fast"                  Unit AND fast
+# mvn test -DexcludedGroups=slow                   Exclude slow tests
+# mvn test -DexcludedGroups="slow | manual"        Exclude slow OR manual
+# mvn test -Dgroups="banking & !slow"              Banking but not slow
+# mvn test -Dgroups="(p2p | p2m) & banking"        P2P or P2M with banking
+# mvn test -Pfast                                  Use fast profile
+# mvn test -Pci                                    Use CI profile
+# mvn test -Pnightly                               Use nightly profile
+# mvn test -Dtest=SmokeSuite                       Run specific suite class
+#
+#=============================================================================

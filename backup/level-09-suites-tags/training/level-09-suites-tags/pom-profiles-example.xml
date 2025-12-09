@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Maven Profiles for Test Tag Filtering - LEVEL 9
+
+    ╔═══════════════════════════════════════════════════════════════╗
+    ║                    MAVEN TEST PROFILES                        ║
+    ╠═══════════════════════════════════════════════════════════════╣
+    ║  This file demonstrates how to configure Maven profiles       ║
+    ║  for selective test execution based on JUnit 5 tags.          ║
+    ║                                                               ║
+    ║  Usage:                                                       ║
+    ║    mvn test -Pfast        (unit + fast tests)                 ║
+    ║    mvn test -Pci          (unit + integration, no slow)       ║
+    ║    mvn test -Pnightly     (all except manual)                 ║
+    ║    mvn test -Psmoke       (smoke tests only)                  ║
+    ║    mvn test -Pperformance (performance tests)                 ║
+    ║    mvn test -Dgroups=p2p  (direct tag filtering)              ║
+    ╚═══════════════════════════════════════════════════════════════╝
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>transfer-service</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>UPI Transfer Service</name>
+    <description>NPCI UPI Transfer Service - Automation Testing Training</description>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!-- Dependency versions -->
+        <junit.version>5.10.1</junit.version>
+        <junit-platform.version>1.10.1</junit-platform.version>
+        <mockito.version>5.8.0</mockito.version>
+        <surefire.version>3.2.2</surefire.version>
+        
+        <!-- Default: no tag filtering (run all tests) -->
+        <test.groups></test.groups>
+        <test.excludedGroups></test.excludedGroups>
+    </properties>
+
+    <dependencies>
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- JUnit Platform Suite (for @Suite) -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit-platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Maven Surefire Plugin - Test Execution -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <!-- Tag filtering (set via profiles or command line) -->
+                    <groups>${test.groups}</groups>
+                    <excludedGroups>${test.excludedGroups}</excludedGroups>
+                    
+                    <!-- Better test output -->
+                    <statelessTestsetReporter 
+                        implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                        <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+                    </statelessTestsetReporter>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--                     MAVEN PROFILES                          -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    
+    <profiles>
+    
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- FAST PROFILE: Quick tests for local development         -->
+        <!-- Usage: mvn test -Pfast                                  -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>fast</id>
+            <properties>
+                <test.groups>unit | fast</test.groups>
+                <test.excludedGroups>slow | integration | performance | manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- CI PROFILE: Tests for every CI build                    -->
+        <!-- Usage: mvn test -Pci                                    -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>ci</id>
+            <properties>
+                <test.groups>unit | integration</test.groups>
+                <test.excludedGroups>slow | performance | manual | nightly</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- SMOKE PROFILE: Critical path verification               -->
+        <!-- Usage: mvn test -Psmoke                                 -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>smoke</id>
+            <properties>
+                <test.groups>smoke</test.groups>
+                <test.excludedGroups></test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- NIGHTLY PROFILE: Comprehensive nightly testing          -->
+        <!-- Usage: mvn test -Pnightly                               -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>nightly</id>
+            <properties>
+                <test.groups></test.groups>
+                <test.excludedGroups>manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- PERFORMANCE PROFILE: SLA and load tests                 -->
+        <!-- Usage: mvn test -Pperformance                           -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>performance</id>
+            <properties>
+                <test.groups>performance | slow</test.groups>
+                <test.excludedGroups>manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- BANKING PROFILE: All banking domain tests               -->
+        <!-- Usage: mvn test -Pbanking                               -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>banking</id>
+            <properties>
+                <test.groups>banking</test.groups>
+                <test.excludedGroups>manual | slow</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- P2P PROFILE: Person-to-person transfer tests            -->
+        <!-- Usage: mvn test -Pp2p                                   -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>p2p</id>
+            <properties>
+                <test.groups>p2p</test.groups>
+                <test.excludedGroups>manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- P2M PROFILE: Person-to-merchant payment tests           -->
+        <!-- Usage: mvn test -Pp2m                                   -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>p2m</id>
+            <properties>
+                <test.groups>p2m</test.groups>
+                <test.excludedGroups>manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- CRITICAL PROFILE: Must-pass tests                       -->
+        <!-- Usage: mvn test -Pcritical                              -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>critical</id>
+            <properties>
+                <test.groups>critical | smoke</test.groups>
+                <test.excludedGroups></test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- SECURITY PROFILE: Security validation tests             -->
+        <!-- Usage: mvn test -Psecurity                              -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>security</id>
+            <properties>
+                <test.groups>security</test.groups>
+                <test.excludedGroups></test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- INTEGRATION PROFILE: Integration tests only             -->
+        <!-- Usage: mvn test -Pintegration                           -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>integration</id>
+            <properties>
+                <test.groups>integration</test.groups>
+                <test.excludedGroups>manual | slow</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- UNIT PROFILE: Unit tests only                           -->
+        <!-- Usage: mvn test -Punit                                  -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>unit</id>
+            <properties>
+                <test.groups>unit</test.groups>
+                <test.excludedGroups>integration | slow | manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- DEV PROFILE: Development environment tests              -->
+        <!-- Usage: mvn test -Pdev                                   -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <test.groups>dev | unit</test.groups>
+                <test.excludedGroups>staging | prod | slow | manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- STAGING PROFILE: Staging environment tests              -->
+        <!-- Usage: mvn test -Pstaging                               -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>staging</id>
+            <properties>
+                <test.groups>staging | integration | smoke</test.groups>
+                <test.excludedGroups>prod | manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- PROD PROFILE: Production smoke tests (safe only)        -->
+        <!-- Usage: mvn test -Pprod                                  -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <test.groups>prod | smoke</test.groups>
+                <test.excludedGroups>slow | manual | integration</test.excludedGroups>
+            </properties>
+        </profile>
+        
+        <!-- ─────────────────────────────────────────────────────── -->
+        <!-- RELEASE PROFILE: Pre-release gate tests                 -->
+        <!-- Usage: mvn test -Prelease                               -->
+        <!-- ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>release</id>
+            <properties>
+                <test.groups>critical | smoke | regression</test.groups>
+                <test.excludedGroups>manual</test.excludedGroups>
+            </properties>
+        </profile>
+        
+    </profiles>
+
+</project>
