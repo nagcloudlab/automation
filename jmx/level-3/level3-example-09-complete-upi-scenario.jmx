@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Level 3 - Example 09: Complete UPI P2P Payment Scenario">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="UPI Payment Complete Flow">
+        <stringProp name="ThreadGroup.num_threads">${__P(threads,5)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(ramp.time,10)}</stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <stringProp name="LoopController.loops">${__P(loops,1)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
+          <stringProp name="HTTPSampler.domain">${__P(base.url,localhost)}</stringProp>
+          <stringProp name="HTTPSampler.port">${__P(api.port,8080)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </ConfigTestElement>
+        <hashTree/>
+        
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Content-Type</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Accept</stringProp>
+              <stringProp name="Header.value">application/json</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        
+        <!-- STEP 1: Check Sender Balance Before Payment -->
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="STEP 1: Check Sender Balance BEFORE" enabled="true">
+          <stringProp name="dataSource">myDB</stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="query">SELECT account_number, balance, customer_name, status 
+FROM accounts 
+WHERE account_number = '1234567890123456'</stringProp>
+          <stringProp name="queryArguments"></stringProp>
+          <stringProp name="queryArgumentsTypes"></stringProp>
+          <stringProp name="variableNames">sender_account,balance_before,sender_name,account_status</stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="queryTimeout"></stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+        </JDBCSampler>
+        <hashTree>
+          <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Validate Sufficient Balance" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="script">def balanceBefore = vars.get("balance_before") as BigDecimal
+def minAmount = "${__P(min.amount,100)}" as BigDecimal
+
+if (balanceBefore &lt; minAmount) {
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage("Insufficient balance: ₹" + balanceBefore)
+    return
+}
+
+log.info("✅ Balance check PASSED: ₹" + balanceBefore)
+</stringProp>
+          </JSR223Assertion>
+          <hashTree/>
+        </hashTree>
+        
+        <!-- STEP 2: Generate Payment Data -->
+        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="STEP 2: Generate Payment Data" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="script">// Generate unique transaction data
+def timestamp = new Date().getTime()
+def random = new Random().nextInt(9999)
+
+// Transaction ID
+def txnId = "TXN${timestamp}${random}"
+vars.put("transactionId", txnId)
+
+// Request ID (UUID)
+def requestId = UUID.randomUUID().toString()
+vars.put("requestId", requestId)
+
+// Amount (random within range)
+def minAmt = "${__P(min.amount,100)}" as Integer
+def maxAmt = "${__P(max.amount,5000)}" as Integer
+def amount = new Random().nextInt(maxAmt - minAmt) + minAmt
+vars.put("paymentAmount", amount.toString())
+
+// UPI IDs
+def senderUpi = "user${__threadNum}@${__chooseRandom(paytm,phonepe,gpay)}"
+def receiverUpi = "merchant${random}@${__chooseRandom(paytm,phonepe)}"
+vars.put("senderUpi", senderUpi)
+vars.put("receiverUpi", receiverUpi)
+
+// Log generated data
+log.info("💰 Generated Payment Data:")
+log.info("   Transaction ID: " + txnId)
+log.info("   Request ID: " + requestId)
+log.info("   From: " + senderUpi)
+log.info("   To: " + receiverUpi)
+log.info("   Amount: ₹" + amount)
+</stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+        </JSR223PreProcessor>
+        <hashTree/>
+        
+        <!-- STEP 3: Send Payment Request -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="STEP 3: POST UPI Payment" enabled="true">
+          <stringProp name="HTTPSampler.path">api/upi/payment</stringProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{
+  "transactionId": "${transactionId}",
+  "requestId": "${requestId}",
+  "fromUpiId": "${senderUpi}",
+  "toUpiId": "${receiverUpi}",
+  "amount": ${paymentAmount},
+  "currency": "INR",
+  "remarks": "Payment ${__time(dd/MMM/yyyy HH:mm:ss)}",
+  "timestamp": "${__time(yyyy-MM-dd'T'HH:mm:ss'Z')}",
+  "environment": "${__P(env,dev)}"
+}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <!-- STEP 4: Extract Transaction ID from Response -->
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="STEP 4: Extract Transaction Data" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="script">import groovy.json.JsonSlurper
+
+try {
+    def response = prev.getResponseDataAsString()
+    def jsonSlurper = new JsonSlurper()
+    def json = jsonSlurper.parseText(response)
+    
+    // Extract key data
+    def apiTxnId = json.data?.transactionId
+    def apiAmount = json.data?.amount
+    def apiStatus = json.data?.status
+    def apiTimestamp = json.data?.timestamp
+    
+    // Store for next requests
+    vars.put("apiTransactionId", apiTxnId ?: "")
+    vars.put("apiAmount", apiAmount?.toString() ?: "0")
+    vars.put("apiStatus", apiStatus ?: "")
+    vars.put("apiTimestamp", apiTimestamp ?: "")
+    
+    log.info("✅ Extracted from response:")
+    log.info("   API Transaction ID: " + apiTxnId)
+    log.info("   API Status: " + apiStatus)
+    log.info("   API Amount: ₹" + apiAmount)
+    
+} catch (Exception e) {
+    log.error("❌ Error extracting data: " + e.getMessage())
+    vars.put("apiTransactionId", "ERROR")
+}
+</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          
+          <!-- STEP 5: Validate Payment Response -->
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert Payment Successful" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1450969134">"success":true</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          
+          <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="Assert Transaction ID Exists" enabled="true">
+            <stringProp name="JSON_PATH">$.data.transactionId</stringProp>
+            <stringProp name="EXPECTED_VALUE"></stringProp>
+            <boolProp name="JSONVALIDATION">false</boolProp>
+            <boolProp name="EXPECT_NULL">false</boolProp>
+            <boolProp name="INVERT">false</boolProp>
+          </JSONPathAssertion>
+          <hashTree/>
+          
+          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Assert Response Time < 2s" enabled="true">
+            <stringProp name="DurationAssertion.duration">2000</stringProp>
+          </DurationAssertion>
+          <hashTree/>
+        </hashTree>
+        
+        <!-- STEP 6: Wait for Processing -->
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="STEP 6: Wait for Processing (2s)" enabled="true">
+          <stringProp name="ConstantTimer.delay">2000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
+        
+        <!-- STEP 7: Check Transaction Status -->
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="STEP 7: GET Transaction Status" enabled="true">
+          <stringProp name="HTTPSampler.path">api/upi/status/${apiTransactionId}</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="STEP 8: Validate Status SUCCESS" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="script">import groovy.json.JsonSlurper
+
+try {
+    def response = prev.getResponseDataAsString()
+    def json = new JsonSlurper().parseText(response)
+    
+    def status = json.data?.status
+    
+    if (status != "SUCCESS") {
+        AssertionResult.setFailure(true)
+        AssertionResult.setFailureMessage("Transaction status is: " + status + " (expected SUCCESS)")
+        return
+    }
+    
+    log.info("✅ Transaction status verified: " + status)
+    
+} catch (Exception e) {
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage("Error validating status: " + e.getMessage())
+}
+</stringProp>
+          </JSR223Assertion>
+          <hashTree/>
+        </hashTree>
+        
+        <!-- STEP 9: Check Sender Balance After Payment -->
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="STEP 9: Check Sender Balance AFTER" enabled="true">
+          <stringProp name="dataSource">myDB</stringProp>
+          <stringProp name="queryType">Select Statement</stringProp>
+          <stringProp name="query">SELECT balance FROM accounts WHERE account_number = '1234567890123456'</stringProp>
+          <stringProp name="variableNames">balance_after</stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+        </JDBCSampler>
+        <hashTree/>
+        
+        <!-- STEP 10: Verify Transaction in Database -->
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="STEP 10: Verify Transaction Record" enabled="true">
+          <stringProp name="dataSource">myDB</stringProp>
+          <stringProp name="queryType">Prepared Select Statement</stringProp>
+          <stringProp name="query">SELECT transaction_id, amount, status, created_at 
+FROM transactions 
+WHERE transaction_id = ?</stringProp>
+          <stringProp name="queryArguments">${apiTransactionId}</stringProp>
+          <stringProp name="queryArgumentsTypes">VARCHAR</stringProp>
+          <stringProp name="variableNames">db_txn_id,db_amount,db_status,db_timestamp</stringProp>
+          <stringProp name="resultVariable"></stringProp>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+        </JDBCSampler>
+        <hashTree/>
+        
+        <!-- STEP 11: Final Complete Validation -->
+        <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="STEP 11: Validate Complete Flow" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="script">// Get all values
+def balanceBefore = vars.get("balance_before") as BigDecimal
+def balanceAfter = vars.get("balance_after") as BigDecimal
+def paymentAmount = vars.get("paymentAmount") as BigDecimal
+def dbTxnId = vars.get("db_txn_id")
+def dbAmount = vars.get("db_amount") as BigDecimal
+def dbStatus = vars.get("db_status")
+
+// Calculate expected balance
+def expectedBalance = balanceBefore - paymentAmount
+def actualDifference = balanceBefore - balanceAfter
+
+log.info("🔍 FINAL VALIDATION:")
+log.info("   Balance Before: ₹" + balanceBefore)
+log.info("   Payment Amount: ₹" + paymentAmount)
+log.info("   Balance After: ₹" + balanceAfter)
+log.info("   Expected After: ₹" + expectedBalance)
+log.info("   Actual Difference: ₹" + actualDifference)
+
+// Validation 1: Balance decreased correctly
+if (actualDifference != paymentAmount) {
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage(
+        "Balance mismatch! Expected decrease: ₹" + paymentAmount + 
+        ", Actual decrease: ₹" + actualDifference
+    )
+    return
+}
+
+// Validation 2: Transaction recorded in database
+if (!dbTxnId) {
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage("Transaction not found in database!")
+    return
+}
+
+// Validation 3: Database amount matches
+if (dbAmount != paymentAmount) {
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage(
+        "Amount mismatch in DB! API: ₹" + paymentAmount + 
+        ", DB: ₹" + dbAmount
+    )
+    return
+}
+
+// Validation 4: Status is SUCCESS in database
+if (dbStatus != "SUCCESS") {
+    AssertionResult.setFailure(true)
+    AssertionResult.setFailureMessage("Database status is not SUCCESS: " + dbStatus)
+    return
+}
+
+// All validations passed!
+log.info("✅ ✅ ✅ ALL VALIDATIONS PASSED!")
+log.info("   ✓ Balance decreased correctly")
+log.info("   ✓ Transaction recorded in database")
+log.info("   ✓ Amount matches in all systems")
+log.info("   ✓ Status is SUCCESS everywhere")
+</stringProp>
+        </JSR223Assertion>
+        <hashTree/>
+        
+        <!-- Result Collectors -->
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

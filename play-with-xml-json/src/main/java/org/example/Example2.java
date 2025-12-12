@@ -6,7 +6,7 @@ import jakarta.xml.bind.Unmarshaller;
 
 import java.io.File;
 
-public class XMLToJavaObject {
+public class Example2 {
     public static void main(String[] args) throws JAXBException {
 
         JAXBContext context = JAXBContext.newInstance(Customer.class);

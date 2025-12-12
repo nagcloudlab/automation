@@ -1,0 +1,12 @@
+fromUpiId,toUpiId,amount,remarks
+user1@upi,user50@upi,1000,Test payment 1
+user2@upi,user51@upi,1500,Test payment 2
+user3@upi,user52@upi,2000,Test payment 3
+user4@upi,user53@upi,2500,Test payment 4
+user5@upi,user54@upi,3000,Test payment 5
+user6@upi,user55@upi,3500,Test payment 6
+user7@upi,user56@upi,4000,Test payment 7
+user8@upi,user57@upi,4500,Test payment 8
+user9@upi,user58@upi,5000,Test payment 9
+user10@upi,user59@upi,1200,Test payment 10
+

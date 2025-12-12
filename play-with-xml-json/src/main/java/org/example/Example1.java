@@ -5,7 +5,7 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 
-public class JavaObjectToXML {
+public class Example1 {
     public static void main(String[] args) throws JAXBException {
 
         Customer customer = new Customer(101, "Nag", "nag@npci.org");

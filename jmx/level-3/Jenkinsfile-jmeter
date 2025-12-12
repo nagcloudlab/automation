@@ -1,0 +1,111 @@
+// Jenkinsfile for JMeter Performance Testing
+// Place this file in your Git repository root
+
+pipeline {
+    agent any
+    
+    environment {
+        JMETER_HOME = '/opt/jmeter'
+        TEST_DIR = 'performance-tests'
+        RESULTS_DIR = 'results'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo '📥 Checking out code from Git...'
+                checkout scm
+            }
+        }
+        
+        stage('Setup') {
+            steps {
+                echo '🔧 Setting up test environment...'
+                sh '''
+                    mkdir -p ${RESULTS_DIR}
+                    mkdir -p ${RESULTS_DIR}/report
+                    echo "Environment: ${ENV}"
+                    echo "JMeter Home: ${JMETER_HOME}"
+                '''
+            }
+        }
+        
+        stage('Run Performance Test') {
+            steps {
+                echo '🚀 Running JMeter performance test...'
+                sh '''
+                    ${JMETER_HOME}/bin/jmeter -n \
+                        -t ${TEST_DIR}/api-load-test.jmx \
+                        -l ${RESULTS_DIR}/results.jtl \
+                        -e -o ${RESULTS_DIR}/report \
+                        -Jthreads=100 \
+                        -Jrampup=60 \
+                        -Jduration=300 \
+                        -Jbase.url=${BASE_URL:-http://api.example.com}
+                '''
+            }
+        }
+        
+        stage('Analyze Results') {
+            steps {
+                echo '📊 Analyzing performance results...'
+                script {
+                    // Parse results
+                    def results = readFile("${RESULTS_DIR}/results.jtl")
+                    echo "Results file size: ${results.length()} bytes"
+                    
+                    // You can add custom analysis here
+                    // For example, parse JTL and extract metrics
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo '📋 Publishing performance reports...'
+            
+            // Publish HTML report
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: "${RESULTS_DIR}/report",
+                reportFiles: 'index.html',
+                reportName: 'JMeter Performance Report',
+                reportTitles: 'Performance Test Results'
+            ])
+            
+            // Archive results
+            archiveArtifacts artifacts: "${RESULTS_DIR}/**/*", fingerprint: true
+            
+            // Publish performance plugin results
+            perfReport sourceDataFiles: "${RESULTS_DIR}/results.jtl",
+                errorFailedThreshold: 5,
+                errorUnstableThreshold: 2,
+                relativeFailedThresholdPositive: 10,
+                relativeUnstableThresholdPositive: 5
+        }
+        
+        success {
+            echo '✅ Performance test PASSED!'
+            // Notify team of success
+            // emailext subject: "✅ Performance Test Passed",
+            //          body: "Performance test completed successfully.",
+            //          to: "team@example.com"
+        }
+        
+        failure {
+            echo '❌ Performance test FAILED!'
+            // Notify team of failure
+            // emailext subject: "❌ Performance Test Failed",
+            //          body: "Performance test failed. Check Jenkins for details.",
+            //          to: "team@example.com"
+        }
+        
+        unstable {
+            echo '⚠️ Performance test UNSTABLE!'
+            // Notify team of unstable build
+        }
+    }
+}

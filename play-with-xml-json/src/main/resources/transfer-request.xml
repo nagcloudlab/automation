@@ -1,0 +1,26 @@
+<ft:FundTransferRequest xmlns:ft="http://npci.org/fundtransfer">
+
+    <header requestId="REQ-12345" channel="UPI">
+        <timestamp>2025-12-12T10:30:00</timestamp>
+    </header>
+
+    <customer>
+        <customerId>CUST1001</customerId>
+        <name>Nagabhushanam</name>
+    </customer>
+
+    <transfers>
+        <transfer>
+            <fromAccount>123456</fromAccount>
+            <toAccount>654321</toAccount>
+            <amount currency="INR">5000</amount>
+            <status>SUCCESS</status>
+        </transfer>
+        <transfer>
+            <fromAccount>123456</fromAccount>
+            <toAccount>777777</toAccount>
+            <amount currency="INR">2500</amount>
+            <status>PENDING</status>
+        </transfer>
+    </transfers>
+</ft:FundTransferRequest>
