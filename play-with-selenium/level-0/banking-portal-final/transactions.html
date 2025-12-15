@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Banking Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f5f5f5;
+        }
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 20px; }
+        .btn { 
+            padding: 8px 15px; 
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        nav {
+            background: #34495e;
+            padding: 0;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        nav li { flex: 1; }
+        nav a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover, nav a.active { background: #2c3e50; }
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h2 { margin-bottom: 20px; color: #333; }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .error { color: red; font-size: 12px; margin-top: 3px; }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+        .radio-group label { 
+            font-weight: normal; 
+            display: flex;
+            align-items: center;
+        }
+        .radio-group input { 
+            width: auto; 
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏦 Banking Portal</h1>
+        <div>
+            <span>Welcome, Admin</span>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="transactions.html" class="active">Transactions</a></li>
+            <li><a href="accounts.html">Accounts</a></li>
+            <li><a href="reports.html">Reports</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h2>Make a Transaction</h2>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('upi')" id="tabUPI">UPI Payment</div>
+            <div class="tab" onclick="showTab('neft')" id="tabNEFT">NEFT</div>
+            <div class="tab" onclick="showTab('withdrawal')" id="tabWithdraw">Withdrawal</div>
+        </div>
+
+        <!-- UPI Form -->
+        <div id="formUPI" class="form-section active">
+            <div class="form-container">
+                <h3>UPI Payment</h3>
+                <form onsubmit="return submitUPI(event)">
+                    <div class="form-group">
+                        <label for="upiId">UPI ID / Phone Number</label>
+                        <input type="text" id="upiId" placeholder="user@upi or 9876543210">
+                        <span class="error" id="upiIdError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="upiAmount">Amount (₹)</label>
+                        <input type="number" id="upiAmount" placeholder="Enter amount" min="1">
+                        <span class="error" id="upiAmountError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="upiRemarks">Remarks (Optional)</label>
+                        <textarea id="upiRemarks" rows="3" placeholder="Enter remarks"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Pay Now</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm('upi')">Reset</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- NEFT Form -->
+        <div id="formNEFT" class="form-section">
+            <div class="form-container">
+                <h3>NEFT Transfer</h3>
+                <form onsubmit="return submitNEFT(event)">
+                    <div class="form-group">
+                        <label for="neftAccount">Account Number</label>
+                        <input type="text" id="neftAccount" placeholder="Enter account number">
+                        <span class="error" id="neftAccountError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="neftIfsc">IFSC Code</label>
+                        <input type="text" id="neftIfsc" placeholder="HDFC0001234" maxlength="11">
+                        <span class="error" id="neftIfscError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="neftName">Beneficiary Name</label>
+                        <input type="text" id="neftName" placeholder="Enter name">
+                        <span class="error" id="neftNameError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="neftAmount">Amount (₹)</label>
+                        <input type="number" id="neftAmount" placeholder="Enter amount" min="1">
+                        <span class="error" id="neftAmountError"></span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Transfer</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm('neft')">Reset</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Withdrawal Form -->
+        <div id="formWithdrawal" class="form-section">
+            <div class="form-container">
+                <h3>Cash Withdrawal</h3>
+                <form onsubmit="return submitWithdrawal(event)">
+                    <div class="form-group">
+                        <label for="withdrawAmount">Withdrawal Amount (₹)</label>
+                        <input type="number" id="withdrawAmount" placeholder="Enter amount" min="100" step="100">
+                        <span class="error" id="withdrawAmountError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Withdrawal Type</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="withdrawType" value="atm" checked>
+                                ATM
+                            </label>
+                            <label>
+                                <input type="radio" name="withdrawType" value="branch">
+                                Branch
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="withdrawReason">Purpose (Optional)</label>
+                        <select id="withdrawReason">
+                            <option value="">Select purpose</option>
+                            <option value="personal">Personal Use</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="bills">Bill Payment</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Withdraw</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm('withdrawal')">Reset</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            // Hide all forms
+            document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            // Show selected form
+            if (tab === 'upi') {
+                document.getElementById('formUPI').classList.add('active');
+                document.getElementById('tabUPI').classList.add('active');
+            } else if (tab === 'neft') {
+                document.getElementById('formNEFT').classList.add('active');
+                document.getElementById('tabNEFT').classList.add('active');
+            } else if (tab === 'withdrawal') {
+                document.getElementById('formWithdrawal').classList.add('active');
+                document.getElementById('tabWithdraw').classList.add('active');
+            }
+        }
+        
+        function submitUPI(e) {
+            e.preventDefault();
+            clearErrors();
+            
+            let upiId = document.getElementById('upiId').value.trim();
+            let amount = document.getElementById('upiAmount').value;
+            
+            let isValid = true;
+            
+            if (upiId === '') {
+                showError('upiIdError', 'UPI ID is required');
+                isValid = false;
+            }
+            
+            if (amount === '' || amount <= 0) {
+                showError('upiAmountError', 'Valid amount is required');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                alert('UPI Payment of ₹' + amount + ' to ' + upiId + ' successful!');
+                resetForm('upi');
+            }
+            
+            return false;
+        }
+        
+        function submitNEFT(e) {
+            e.preventDefault();
+            clearErrors();
+            
+            let account = document.getElementById('neftAccount').value.trim();
+            let ifsc = document.getElementById('neftIfsc').value.trim();
+            let name = document.getElementById('neftName').value.trim();
+            let amount = document.getElementById('neftAmount').value;
+            
+            let isValid = true;
+            
+            if (account === '') {
+                showError('neftAccountError', 'Account number is required');
+                isValid = false;
+            }
+            
+            if (ifsc === '') {
+                showError('neftIfscError', 'IFSC code is required');
+                isValid = false;
+            }
+            
+            if (name === '') {
+                showError('neftNameError', 'Beneficiary name is required');
+                isValid = false;
+            }
+            
+            if (amount === '' || amount <= 0) {
+                showError('neftAmountError', 'Valid amount is required');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                alert('NEFT Transfer of ₹' + amount + ' to ' + name + ' initiated!');
+                resetForm('neft');
+            }
+            
+            return false;
+        }
+        
+        function submitWithdrawal(e) {
+            e.preventDefault();
+            clearErrors();
+            
+            let amount = document.getElementById('withdrawAmount').value;
+            let type = document.querySelector('input[name="withdrawType"]:checked').value;
+            
+            if (amount === '' || amount < 100) {
+                showError('withdrawAmountError', 'Minimum withdrawal amount is ₹100');
+                return false;
+            }
+            
+            alert('Withdrawal request of ₹' + amount + ' via ' + type.toUpperCase() + ' submitted!');
+            resetForm('withdrawal');
+            
+            return false;
+        }
+        
+        function showError(id, msg) {
+            document.getElementById(id).textContent = msg;
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+        }
+        
+        function resetForm(type) {
+            if (type === 'upi') {
+                document.getElementById('upiId').value = '';
+                document.getElementById('upiAmount').value = '';
+                document.getElementById('upiRemarks').value = '';
+            } else if (type === 'neft') {
+                document.getElementById('neftAccount').value = '';
+                document.getElementById('neftIfsc').value = '';
+                document.getElementById('neftName').value = '';
+                document.getElementById('neftAmount').value = '';
+            } else if (type === 'withdrawal') {
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('withdrawReason').value = '';
+            }
+            clearErrors();
+        }
+        
+        function logout() {
+            if (confirm('Logout?')) {
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

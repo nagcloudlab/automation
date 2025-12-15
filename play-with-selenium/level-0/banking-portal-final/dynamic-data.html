@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Data - Banking Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f5f5f5;
+        }
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 20px; }
+        .btn { 
+            padding: 8px 15px; 
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        nav {
+            background: #34495e;
+            padding: 0;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        nav li { flex: 1; }
+        nav a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover { background: #2c3e50; }
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h2, h3 { margin-bottom: 15px; color: #333; }
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .hidden { display: none; }
+        
+        .data-item {
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .skeleton-text {
+            height: 20px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-online { background: #28a745; }
+        .status-offline { background: #dc3545; }
+        .status-loading { background: #ffc107; animation: pulse 1s infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            animation: slideIn 0.3s;
+            z-index: 1000;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .notification.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏦 Banking Portal</h1>
+        <div>
+            <span>Welcome, Admin</span>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="transactions.html">Transactions</a></li>
+            <li><a href="accounts.html">Accounts</a></li>
+            <li><a href="reports.html">Reports</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h2>Dynamic Data Loading Demo</h2>
+        <p style="color: #666; margin-bottom: 20px;">
+            <strong>Purpose:</strong> Practice Selenium waits (Implicit, Explicit, Fluent) with async content
+        </p>
+
+        <!-- Section 1: Simple Delayed Loading -->
+        <div class="section">
+            <h3>1. Simple Delayed Content (2 seconds)</h3>
+            <p>Click button to load data after 2 seconds delay</p>
+            <button class="btn btn-primary" onclick="loadDelayedContent()" id="loadBtn1">Load Data</button>
+            
+            <div id="delayedContent" class="hidden" style="margin-top: 15px;">
+                <div id="loadingSpinner1" class="loading-container">
+                    <div class="spinner"></div>
+                    <p>Loading data...</p>
+                </div>
+                <div id="content1" class="hidden">
+                    <h4 id="dataTitle">Account Balance Updated!</h4>
+                    <p id="balanceAmount">₹1,45,230.50</p>
+                    <small id="timestamp"></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Progressive Loading -->
+        <div class="section">
+            <h3>2. Progressive Data Loading (Items appear one by one)</h3>
+            <button class="btn btn-primary" onclick="loadProgressiveData()" id="loadBtn2">Load Transactions</button>
+            
+            <div id="progressiveContainer" class="hidden" style="margin-top: 15px;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <div id="progressiveData" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        <!-- Section 3: AJAX Table Loading -->
+        <div class="section">
+            <h3>3. AJAX Table Loading (3 seconds)</h3>
+            <p>Simulates fetching data from API</p>
+            
+            <div style="margin-bottom: 15px;">
+                <label>Filter by Status:</label>
+                <select id="statusFilter" onchange="filterAndReload()">
+                    <option value="all">All</option>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                </select>
+                <button class="btn btn-success" onclick="loadAjaxTable()" id="loadBtn3">Refresh Data</button>
+            </div>
+            
+            <div id="tableContainer">
+                <div id="loadingSpinner2" class="loading-container hidden">
+                    <div class="spinner"></div>
+                    <p>Fetching records from server...</p>
+                </div>
+                
+                <table id="dynamicTable" class="hidden">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                
+                <div id="noData" class="hidden" style="text-align: center; padding: 30px; color: #999;">
+                    No records found
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Skeleton Loading -->
+        <div class="section">
+            <h3>4. Skeleton Screen Loading</h3>
+            <p>Modern loading pattern - shows placeholder before data</p>
+            <button class="btn btn-primary" onclick="loadWithSkeleton()" id="loadBtn4">Load Content</button>
+            
+            <div id="skeletonContainer" class="hidden" style="margin-top: 15px;">
+                <!-- Skeleton Loader -->
+                <div id="skeletonLoader">
+                    <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 70%;"></div>
+                    <div class="skeleton skeleton-text" style="width: 90%;"></div>
+                </div>
+                
+                <!-- Actual Content -->
+                <div id="actualContent" class="hidden">
+                    <h4 id="newsTitle">Latest Banking News</h4>
+                    <p id="newsContent">New UPI transaction limits announced. The daily limit has been increased to ₹1,00,000 for peer-to-peer transfers.</p>
+                    <small id="newsDate">Updated: <span id="newsTimestamp"></span></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Appearing/Disappearing Elements -->
+        <div class="section">
+            <h3>5. Dynamic Show/Hide Elements</h3>
+            <p>Elements appear and disappear - tests staleness</p>
+            
+            <button class="btn btn-primary" onclick="startAutoRefresh()" id="startRefresh">Start Auto-Refresh</button>
+            <button class="btn btn-danger" onclick="stopAutoRefresh()" id="stopRefresh">Stop</button>
+            
+            <div style="margin-top: 15px;">
+                <p>Status: 
+                    <span class="status-indicator status-offline" id="statusIndicator"></span>
+                    <span id="statusText">Stopped</span>
+                </p>
+                
+                <div id="refreshingContent" style="margin-top: 10px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+                    <p id="refreshCount">Refresh Count: 0</p>
+                    <p id="lastRefresh">Last Updated: Never</p>
+                    <p id="randomData">Data: -</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Lazy Loading List -->
+        <div class="section">
+            <h3>6. Infinite Scroll / Lazy Loading</h3>
+            <button class="btn btn-primary" onclick="startLazyLoad()" id="loadBtn5">Start Loading</button>
+            
+            <div id="lazyContainer" class="hidden" style="margin-top: 15px; max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+                <div id="lazyList"></div>
+                <div id="lazyLoader" class="loading-container hidden">
+                    <div class="spinner"></div>
+                    <p>Loading more items...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Conditional Element Rendering -->
+        <div class="section">
+            <h3>7. Conditional Rendering (Wait for specific condition)</h3>
+            <p>Element appears only when balance > ₹50,000</p>
+            
+            <button class="btn btn-primary" onclick="checkBalance()" id="checkBtn">Check Balance</button>
+            
+            <div style="margin-top: 15px;">
+                <div id="balanceCheck" class="loading-container hidden">
+                    <div class="spinner"></div>
+                    <p>Checking account balance...</p>
+                </div>
+                
+                <div id="lowBalance" class="hidden" style="padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107;">
+                    ⚠️ Your balance is below ₹50,000. Consider adding funds.
+                </div>
+                
+                <div id="goodBalance" class="hidden" style="padding: 15px; background: #d4edda; border-left: 4px solid #28a745;">
+                    ✅ Your balance is healthy: <strong id="displayBalance"></strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 8: Real-time Updates -->
+        <div class="section">
+            <h3>8. Real-time Counter (Updates every second)</h3>
+            <button class="btn btn-primary" onclick="startCounter()" id="startCounter">Start Counter</button>
+            <button class="btn btn-danger" onclick="stopCounter()" id="stopCounter">Stop Counter</button>
+            
+            <div style="margin-top: 15px; text-align: center;">
+                <h2 id="counterDisplay" style="font-size: 48px; color: #667eea;">0</h2>
+                <p>Seconds elapsed</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="notification" id="notification">
+        <strong>✓ Success!</strong>
+        <p id="notificationText">Data loaded successfully</p>
+    </div>
+
+    <script>
+        let refreshInterval = null;
+        let counterInterval = null;
+        let refreshCount = 0;
+        let counterValue = 0;
+
+        // Section 1: Simple Delayed Loading
+        function loadDelayedContent() {
+            document.getElementById('delayedContent').classList.remove('hidden');
+            document.getElementById('loadingSpinner1').classList.remove('hidden');
+            document.getElementById('content1').classList.add('hidden');
+            
+            setTimeout(() => {
+                document.getElementById('loadingSpinner1').classList.add('hidden');
+                document.getElementById('content1').classList.remove('hidden');
+                document.getElementById('timestamp').textContent = 'Loaded at: ' + new Date().toLocaleTimeString();
+                showNotification('Balance data loaded!');
+            }, 2000);
+        }
+
+        // Section 2: Progressive Loading
+        function loadProgressiveData() {
+            const container = document.getElementById('progressiveContainer');
+            const dataDiv = document.getElementById('progressiveData');
+            const progressBar = document.getElementById('progressBar');
+            
+            container.classList.remove('hidden');
+            dataDiv.innerHTML = '';
+            progressBar.style.width = '0%';
+            
+            const transactions = [
+                { id: 'TXN001', desc: 'UPI Payment to merchant@upi', amount: '₹500' },
+                { id: 'TXN002', desc: 'NEFT Transfer to John Doe', amount: '₹10,000' },
+                { id: 'TXN003', desc: 'Withdrawal from ATM', amount: '₹5,000' },
+                { id: 'TXN004', desc: 'Deposit via Cheque', amount: '₹20,000' },
+                { id: 'TXN005', desc: 'UPI Payment for groceries', amount: '₹1,200' }
+            ];
+            
+            transactions.forEach((txn, index) => {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'data-item';
+                    item.id = `txn-${txn.id}`;
+                    item.innerHTML = `<strong>${txn.id}</strong>: ${txn.desc} - ${txn.amount}`;
+                    dataDiv.appendChild(item);
+                    
+                    progressBar.style.width = ((index + 1) / transactions.length * 100) + '%';
+                    
+                    if (index === transactions.length - 1) {
+                        showNotification('All transactions loaded!');
+                    }
+                }, (index + 1) * 800);
+            });
+        }
+
+        // Section 3: AJAX Table Loading
+        function loadAjaxTable() {
+            const spinner = document.getElementById('loadingSpinner2');
+            const table = document.getElementById('dynamicTable');
+            const noData = document.getElementById('noData');
+            const tbody = document.getElementById('tableBody');
+            
+            table.classList.add('hidden');
+            noData.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            
+            setTimeout(() => {
+                spinner.classList.add('hidden');
+                
+                const filter = document.getElementById('statusFilter').value;
+                const data = generateTableData(filter);
+                
+                if (data.length === 0) {
+                    noData.classList.remove('hidden');
+                } else {
+                    tbody.innerHTML = '';
+                    data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${row.id}</td>
+                            <td>${row.customer}</td>
+                            <td>${row.amount}</td>
+                            <td><span style="color: ${row.status === 'active' ? '#28a745' : '#ffc107'}">${row.status}</span></td>
+                            <td>${row.date}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    table.classList.remove('hidden');
+                    showNotification(`Loaded ${data.length} records`);
+                }
+            }, 3000);
+        }
+
+        function generateTableData(filter) {
+            const allData = [
+                { id: '001', customer: 'Rajesh Kumar', amount: '₹45,230', status: 'active', date: '2024-12-15' },
+                { id: '002', customer: 'Priya Sharma', amount: '₹1,25,000', status: 'active', date: '2024-12-14' },
+                { id: '003', customer: 'Amit Patel', amount: '₹12,450', status: 'pending', date: '2024-12-13' },
+                { id: '004', customer: 'Sneha Reddy', amount: '₹67,890', status: 'active', date: '2024-12-12' },
+                { id: '005', customer: 'Vikram Singh', amount: '₹2,34,560', status: 'pending', date: '2024-12-11' }
+            ];
+            
+            if (filter === 'all') return allData;
+            return allData.filter(item => item.status === filter);
+        }
+
+        function filterAndReload() {
+            loadAjaxTable();
+        }
+
+        // Section 4: Skeleton Loading
+        function loadWithSkeleton() {
+            const container = document.getElementById('skeletonContainer');
+            const skeleton = document.getElementById('skeletonLoader');
+            const content = document.getElementById('actualContent');
+            
+            container.classList.remove('hidden');
+            skeleton.style.display = 'block';
+            content.classList.add('hidden');
+            
+            setTimeout(() => {
+                skeleton.style.display = 'none';
+                content.classList.remove('hidden');
+                document.getElementById('newsTimestamp').textContent = new Date().toLocaleString();
+                showNotification('News loaded!');
+            }, 2500);
+        }
+
+        // Section 5: Auto Refresh
+        function startAutoRefresh() {
+            if (refreshInterval) return;
+            
+            document.getElementById('statusIndicator').className = 'status-indicator status-loading';
+            document.getElementById('statusText').textContent = 'Running...';
+            refreshCount = 0;
+            
+            refreshInterval = setInterval(() => {
+                refreshCount++;
+                document.getElementById('refreshCount').textContent = 'Refresh Count: ' + refreshCount;
+                document.getElementById('lastRefresh').textContent = 'Last Updated: ' + new Date().toLocaleTimeString();
+                document.getElementById('randomData').textContent = 'Data: ' + Math.floor(Math.random() * 1000);
+                
+                document.getElementById('statusIndicator').className = 'status-indicator status-online';
+                setTimeout(() => {
+                    document.getElementById('statusIndicator').className = 'status-indicator status-loading';
+                }, 200);
+            }, 2000);
+        }
+
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+                document.getElementById('statusIndicator').className = 'status-indicator status-offline';
+                document.getElementById('statusText').textContent = 'Stopped';
+            }
+        }
+
+        // Section 6: Lazy Loading
+        function startLazyLoad() {
+            const container = document.getElementById('lazyContainer');
+            const list = document.getElementById('lazyList');
+            const loader = document.getElementById('lazyLoader');
+            
+            container.classList.remove('hidden');
+            list.innerHTML = '';
+            
+            let count = 0;
+            const maxItems = 20;
+            
+            function loadBatch() {
+                if (count >= maxItems) return;
+                
+                loader.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    for (let i = 0; i < 5 && count < maxItems; i++) {
+                        count++;
+                        const item = document.createElement('div');
+                        item.className = 'data-item';
+                        item.id = `item-${count}`;
+                        item.textContent = `Item ${count}: Transaction #${count.toString().padStart(4, '0')}`;
+                        list.appendChild(item);
+                    }
+                    
+                    loader.classList.add('hidden');
+                    
+                    if (count < maxItems) {
+                        setTimeout(loadBatch, 1500);
+                    } else {
+                        showNotification('All items loaded!');
+                    }
+                }, 1000);
+            }
+            
+            loadBatch();
+        }
+
+        // Section 7: Conditional Rendering
+        function checkBalance() {
+            document.getElementById('balanceCheck').classList.remove('hidden');
+            document.getElementById('lowBalance').classList.add('hidden');
+            document.getElementById('goodBalance').classList.add('hidden');
+            
+            setTimeout(() => {
+                const balance = Math.floor(Math.random() * 100000) + 10000;
+                
+                document.getElementById('balanceCheck').classList.add('hidden');
+                
+                if (balance < 50000) {
+                    document.getElementById('lowBalance').classList.remove('hidden');
+                } else {
+                    document.getElementById('displayBalance').textContent = '₹' + balance.toLocaleString('en-IN');
+                    document.getElementById('goodBalance').classList.remove('hidden');
+                }
+            }, 2000);
+        }
+
+        // Section 8: Counter
+        function startCounter() {
+            if (counterInterval) return;
+            
+            counterValue = 0;
+            document.getElementById('counterDisplay').textContent = counterValue;
+            
+            counterInterval = setInterval(() => {
+                counterValue++;
+                document.getElementById('counterDisplay').textContent = counterValue;
+            }, 1000);
+        }
+
+        function stopCounter() {
+            if (counterInterval) {
+                clearInterval(counterInterval);
+                counterInterval = null;
+            }
+        }
+
+        // Notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            document.getElementById('notificationText').textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function logout() {
+            if (confirm('Logout?')) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            stopAutoRefresh();
+            stopCounter();
+        });
+    </script>
+</body>
+</html>

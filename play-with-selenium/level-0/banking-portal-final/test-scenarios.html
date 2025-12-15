@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Scenarios - Selenium Training</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .header h1 { margin-bottom: 10px; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .back-btn:hover { background: #f0f0f0; }
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        h3 {
+            color: #333;
+            margin: 20px 0 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin: 2px;
+        }
+        .tag-basic { background: #d4edda; color: #155724; }
+        .tag-intermediate { background: #fff3cd; color: #856404; }
+        .tag-advanced { background: #f8d7da; color: #721c24; }
+        .locator-example {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .note {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .quick-nav {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .quick-nav a {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .quick-nav a:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn" id="backBtn">← Back to Home</a>
+        
+        <div class="header">
+            <h1>🎯 Selenium Test Scenarios Reference</h1>
+            <p>Complete guide to all testable elements and scenarios</p>
+        </div>
+
+        <div class="quick-nav">
+            <strong>Quick Navigation:</strong>
+            <a href="#login">Login</a>
+            <a href="#register">Register</a>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#transactions">Transactions</a>
+            <a href="#accounts">Accounts</a>
+            <a href="#reports">Reports</a>
+            <a href="#dynamic">Dynamic Data</a>
+        </div>
+
+        <!-- LOGIN PAGE -->
+        <div class="section" id="login">
+            <h2>1. Login Page (login.html)</h2>
+            <span class="tag tag-basic">BASIC</span>
+            <span class="tag tag-basic">FORMS</span>
+            <span class="tag tag-basic">VALIDATION</span>
+            
+            <h3>Test Elements:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>ID/Locator</th>
+                        <th>Type</th>
+                        <th>Test Scenarios</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Username Field</td>
+                        <td><code>id="username"</code></td>
+                        <td>Text Input</td>
+                        <td>sendKeys(), clear(), getAttribute(), validation</td>
+                    </tr>
+                    <tr>
+                        <td>Password Field</td>
+                        <td><code>id="password"</code></td>
+                        <td>Password Input</td>
+                        <td>sendKeys(), type attribute, masking</td>
+                    </tr>
+                    <tr>
+                        <td>User Type Dropdown</td>
+                        <td><code>id="userType"</code></td>
+                        <td>Select</td>
+                        <td>Select class, options, selected value</td>
+                    </tr>
+                    <tr>
+                        <td>Remember Me</td>
+                        <td><code>id="rememberMe"</code></td>
+                        <td>Checkbox</td>
+                        <td>click(), isSelected()</td>
+                    </tr>
+                    <tr>
+                        <td>Terms Checkbox</td>
+                        <td><code>id="terms"</code></td>
+                        <td>Checkbox</td>
+                        <td>Required validation</td>
+                    </tr>
+                    <tr>
+                        <td>Login Button</td>
+                        <td><code>id="loginBtn"</code></td>
+                        <td>Button</td>
+                        <td>click(), isEnabled(), submit</td>
+                    </tr>
+                    <tr>
+                        <td>Clear Button</td>
+                        <td><code>onclick="clearForm()"</code></td>
+                        <td>Button</td>
+                        <td>Reset form functionality</td>
+                    </tr>
+                    <tr>
+                        <td>Error Messages</td>
+                        <td><code>id="usernameError"</code></td>
+                        <td>Span</td>
+                        <td>getText(), validation messages</td>
+                    </tr>
+                    <tr>
+                        <td>Forgot Password Link</td>
+                        <td><code>By.linkText()</code></td>
+                        <td>Link</td>
+                        <td>Alert dialog handling</td>
+                    </tr>
+                    <tr>
+                        <td>Register Link</td>
+                        <td><code>href="register.html"</code></td>
+                        <td>Link</td>
+                        <td>Navigation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="locator-example">
+                <strong>Locator Examples:</strong><br>
+                <code>By.id("username")</code><br>
+                <code>By.name("password")</code><br>
+                <code>By.className("error")</code><br>
+                <code>By.linkText("Forgot Password?")</code><br>
+                <code>By.cssSelector("#loginBtn")</code><br>
+                <code>By.xpath("//button[@id='loginBtn']")</code>
+            </div>
+
+            <h3>Test Scenarios:</h3>
+            <ul>
+                <li>✓ Valid login (admin/admin123)</li>
+                <li>✓ Empty username validation</li>
+                <li>✓ Empty password validation</li>
+                <li>✓ Invalid credentials</li>
+                <li>✓ Terms not accepted</li>
+                <li>✓ Dropdown selection</li>
+                <li>✓ Clear form functionality</li>
+                <li>✓ Link navigation</li>
+            </ul>
+        </div>
+
+        <!-- REGISTER PAGE -->
+        <div class="section" id="register">
+            <h2>2. Registration Page (register.html)</h2>
+            <span class="tag tag-basic">FORMS</span>
+            <span class="tag tag-intermediate">ALL INPUT TYPES</span>
+            
+            <h3>Key Elements:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Validation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Full Name</td>
+                        <td><code>fullName</code></td>
+                        <td>text</td>
+                        <td>Min 3 characters</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><code>email</code></td>
+                        <td>email</td>
+                        <td>Email format</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile</td>
+                        <td><code>mobile</code></td>
+                        <td>tel</td>
+                        <td>10 digits</td>
+                    </tr>
+                    <tr>
+                        <td>Date of Birth</td>
+                        <td><code>dob</code></td>
+                        <td>date</td>
+                        <td>Required</td>
+                    </tr>
+                    <tr>
+                        <td>Gender (Radio)</td>
+                        <td><code>name="gender"</code></td>
+                        <td>radio</td>
+                        <td>Selection required</td>
+                    </tr>
+                    <tr>
+                        <td>Account Type</td>
+                        <td><code>accountType</code></td>
+                        <td>select</td>
+                        <td>Required</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td><code>address</code></td>
+                        <td>textarea</td>
+                        <td>Optional</td>
+                    </tr>
+                    <tr>
+                        <td>Password</td>
+                        <td><code>regPassword</code></td>
+                        <td>password</td>
+                        <td>Min 6 characters</td>
+                    </tr>
+                    <tr>
+                        <td>Confirm Password</td>
+                        <td><code>confirmPassword</code></td>
+                        <td>password</td>
+                        <td>Must match</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Test Scenarios:</h3>
+            <ul>
+                <li>✓ Complete registration flow</li>
+                <li>✓ Field validations (all fields)</li>
+                <li>✓ Password matching</li>
+                <li>✓ Radio button selection</li>
+                <li>✓ Dropdown selection</li>
+                <li>✓ Checkbox interactions</li>
+                <li>✓ Date picker</li>
+                <li>✓ TextArea input</li>
+            </ul>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div class="section" id="dashboard">
+            <h2>3. Dashboard (dashboard.html)</h2>
+            <span class="tag tag-basic">NAVIGATION</span>
+            <span class="tag tag-basic">TABLES</span>
+            
+            <h3>Key Elements:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>ID/Locator</th>
+                        <th>Test Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Welcome Text</td>
+                        <td><code>id="welcomeUser"</code></td>
+                        <td>getText(), verify user name</td>
+                    </tr>
+                    <tr>
+                        <td>Logout Button</td>
+                        <td><code>onclick="logout()"</code></td>
+                        <td>Alert handling, navigation</td>
+                    </tr>
+                    <tr>
+                        <td>Nav Menu</td>
+                        <td><code>nav a</code></td>
+                        <td>Multi-page navigation</td>
+                    </tr>
+                    <tr>
+                        <td>Balance Card</td>
+                        <td><code>id="balance"</code></td>
+                        <td>Read dynamic values</td>
+                    </tr>
+                    <tr>
+                        <td>Transaction Table</td>
+                        <td><code>id="transactionTable"</code></td>
+                        <td>Table operations</td>
+                    </tr>
+                    <tr>
+                        <td>View Buttons</td>
+                        <td><code>onclick="viewDetails()"</code></td>
+                        <td>Click, alert handling</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Table Operations:</h3>
+            <ul>
+                <li>✓ Get row count</li>
+                <li>✓ Read cell values</li>
+                <li>✓ Click buttons in rows</li>
+                <li>✓ Extract table data</li>
+                <li>✓ Verify column headers</li>
+            </ul>
+        </div>
+
+        <!-- TRANSACTIONS PAGE -->
+        <div class="section" id="transactions">
+            <h2>4. Transactions (transactions.html)</h2>
+            <span class="tag tag-intermediate">TABS</span>
+            <span class="tag tag-intermediate">DYNAMIC FORMS</span>
+            
+            <h3>Tab Elements:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tab</th>
+                        <th>ID</th>
+                        <th>Elements</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>UPI Tab</td>
+                        <td><code>tabUPI</code></td>
+                        <td>upiId, upiAmount, upiRemarks</td>
+                    </tr>
+                    <tr>
+                        <td>NEFT Tab</td>
+                        <td><code>tabNEFT</code></td>
+                        <td>neftAccount, neftIfsc, neftName, neftAmount</td>
+                    </tr>
+                    <tr>
+                        <td>Withdrawal Tab</td>
+                        <td><code>tabWithdraw</code></td>
+                        <td>withdrawAmount, withdrawType (radio), withdrawReason</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Test Scenarios:</h3>
+            <ul>
+                <li>✓ Switch between tabs</li>
+                <li>✓ Form visibility on tab change</li>
+                <li>✓ Form validation in each tab</li>
+                <li>✓ Radio button selection</li>
+                <li>✓ Form submission</li>
+                <li>✓ Reset functionality</li>
+            </ul>
+        </div>
+
+        <!-- ACCOUNTS PAGE -->
+        <div class="section" id="accounts">
+            <h2>5. Accounts (accounts.html)</h2>
+            <span class="tag tag-intermediate">SEARCH</span>
+            <span class="tag tag-intermediate">FILTERS</span>
+            <span class="tag tag-advanced">MODAL</span>
+            
+            <h3>Key Features:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>ID</th>
+                        <th>Test Scenario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Search Input</td>
+                        <td><code>searchInput</code></td>
+                        <td>Filter table on keyup</td>
+                    </tr>
+                    <tr>
+                        <td>Status Filter</td>
+                        <td><code>statusFilter</code></td>
+                        <td>Dropdown filter</td>
+                    </tr>
+                    <tr>
+                        <td>Type Filter</td>
+                        <td><code>typeFilter</code></td>
+                        <td>Dropdown filter</td>
+                    </tr>
+                    <tr>
+                        <td>Select All</td>
+                        <td><code>selectAll</code></td>
+                        <td>Checkbox - toggle all rows</td>
+                    </tr>
+                    <tr>
+                        <td>Row Checkboxes</td>
+                        <td><code>.row-checkbox</code></td>
+                        <td>Individual selection</td>
+                    </tr>
+                    <tr>
+                        <td>Pagination</td>
+                        <td><code>.pagination button</code></td>
+                        <td>Page navigation</td>
+                    </tr>
+                    <tr>
+                        <td>Modal Dialog</td>
+                        <td><code>addModal</code></td>
+                        <td>Show/hide, form submit</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Advanced Scenarios:</h3>
+            <ul>
+                <li>✓ Search + filter combination</li>
+                <li>✓ Dynamic row count after filter</li>
+                <li>✓ Select all/deselect all</li>
+                <li>✓ Pagination navigation</li>
+                <li>✓ Modal open/close</li>
+                <li>✓ Form in modal</li>
+            </ul>
+        </div>
+
+        <!-- REPORTS PAGE -->
+        <div class="section" id="reports">
+            <h2>6. Reports (reports.html)</h2>
+            <span class="tag tag-advanced">ALERTS</span>
+            <span class="tag tag-advanced">FILE UPLOAD</span>
+            <span class="tag tag-advanced">IFRAME</span>
+            
+            <h3>Advanced Features:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Element</th>
+                        <th>Selenium Handling</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>JavaScript Alert</td>
+                        <td><code>onclick="showJSAlert()"</code></td>
+                        <td>switchTo().alert().accept()</td>
+                    </tr>
+                    <tr>
+                        <td>Confirm Dialog</td>
+                        <td><code>onclick="showConfirm()"</code></td>
+                        <td>alert.accept() / alert.dismiss()</td>
+                    </tr>
+                    <tr>
+                        <td>Prompt Dialog</td>
+                        <td><code>onclick="showPrompt()"</code></td>
+                        <td>alert.sendKeys(), accept()</td>
+                    </tr>
+                    <tr>
+                        <td>File Upload</td>
+                        <td><code>id="fileUpload"</code></td>
+                        <td>sendKeys(filePath)</td>
+                    </tr>
+                    <tr>
+                        <td>Range Slider</td>
+                        <td><code>id="transactionLimit"</code></td>
+                        <td>sendKeys() or JavaScript</td>
+                    </tr>
+                    <tr>
+                        <td>iFrame</td>
+                        <td><code>id="helpFrame"</code></td>
+                        <td>switchTo().frame()</td>
+                    </tr>
+                    <tr>
+                        <td>New Window</td>
+                        <td><code>onclick="openNewWindow()"</code></td>
+                        <td>getWindowHandles(), switchTo()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DYNAMIC DATA PAGE -->
+        <div class="section" id="dynamic">
+            <h2>7. Dynamic Data (dynamic-data.html)</h2>
+            <span class="tag tag-advanced">WAITS</span>
+            <span class="tag tag-advanced">ASYNC</span>
+            <span class="tag tag-advanced">AJAX</span>
+            
+            <h3>8 Async Scenarios:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Delay</th>
+                        <th>Wait Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. Simple Delayed</td>
+                        <td>2 sec</td>
+                        <td>invisibilityOf, visibilityOf</td>
+                    </tr>
+                    <tr>
+                        <td>2. Progressive Loading</td>
+                        <td>800ms each</td>
+                        <td>numberOfElementsToBe</td>
+                    </tr>
+                    <tr>
+                        <td>3. AJAX Table</td>
+                        <td>3 sec</td>
+                        <td>stalenessOf, table reload</td>
+                    </tr>
+                    <tr>
+                        <td>4. Skeleton Screen</td>
+                        <td>2.5 sec</td>
+                        <td>Element replacement</td>
+                    </tr>
+                    <tr>
+                        <td>5. Auto-Refresh</td>
+                        <td>2 sec interval</td>
+                        <td>textToBePresentIn, Fluent Wait</td>
+                    </tr>
+                    <tr>
+                        <td>6. Lazy Loading</td>
+                        <td>1 sec batches</td>
+                        <td>Progressive element count</td>
+                    </tr>
+                    <tr>
+                        <td>7. Conditional Render</td>
+                        <td>2 sec</td>
+                        <td>OR conditions</td>
+                    </tr>
+                    <tr>
+                        <td>8. Real-time Counter</td>
+                        <td>1 sec updates</td>
+                        <td>textToBe, continuous updates</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note">
+                <strong>⏱️ Wait Strategies Covered:</strong><br>
+                • Explicit Wait with ExpectedConditions<br>
+                • Fluent Wait with custom conditions<br>
+                • Staleness detection<br>
+                • Custom lambda conditions<br>
+                • Multiple element waits
+            </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="section">
+            <h2>📊 Complete Coverage Summary</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Pages</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Locator Strategies</strong></td>
+                        <td>All</td>
+                        <td>8 types</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Form Elements</strong></td>
+                        <td>Login, Register</td>
+                        <td>12 types</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tables</strong></td>
+                        <td>Dashboard, Accounts</td>
+                        <td>2 implementations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alerts</strong></td>
+                        <td>Reports</td>
+                        <td>3 types</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Wait Scenarios</strong></td>
+                        <td>Dynamic Data</td>
+                        <td>8 scenarios</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Navigation</strong></td>
+                        <td>All</td>
+                        <td>Multi-page</td>
+                    </tr>
+                    <tr>
+                        <td><strong>File Operations</strong></td>
+                        <td>Reports</td>
+                        <td>Upload + Download</td>
+                    </tr>
+                    <tr>
+                        <td><strong>iFrames</strong></td>
+                        <td>Reports</td>
+                        <td>1 frame</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align: center; padding: 20px;">
+            <a href="index.html" class="back-btn">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts - Banking Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f5f5f5;
+        }
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 20px; }
+        .btn { 
+            padding: 8px 15px; 
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-small { padding: 6px 12px; font-size: 12px; }
+        nav {
+            background: #34495e;
+            padding: 0;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        nav li { flex: 1; }
+        nav a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover, nav a.active { background: #2c3e50; }
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h2 { margin-bottom: 20px; color: #333; }
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        th input[type="checkbox"] {
+            cursor: pointer;
+        }
+        tr:hover { background: #f8f9fa; }
+        .status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-inactive { background: #f8d7da; color: #721c24; }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .pagination button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+        }
+        .modal-content h3 { margin-bottom: 15px; }
+        .close-btn {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        .close-btn:hover { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏦 Banking Portal</h1>
+        <div>
+            <span>Welcome, Admin</span>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="transactions.html">Transactions</a></li>
+            <li><a href="accounts.html" class="active">Accounts</a></li>
+            <li><a href="reports.html">Reports</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h2>Customer Accounts</h2>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label>Search</label>
+                <input type="text" id="searchInput" placeholder="Search by name or account..." onkeyup="filterTable()">
+            </div>
+            
+            <div class="filter-group">
+                <label>Status</label>
+                <select id="statusFilter" onchange="filterTable()">
+                    <option value="all">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Account Type</label>
+                <select id="typeFilter" onchange="filterTable()">
+                    <option value="all">All Types</option>
+                    <option value="savings">Savings</option>
+                    <option value="current">Current</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <button class="btn btn-primary" onclick="clearFilters()" style="margin-top: 24px;">Clear Filters</button>
+                <button class="btn btn-success" onclick="showAddModal()" style="margin-top: 24px;">Add Account</button>
+            </div>
+        </div>
+
+        <table id="accountsTable">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                    <th>Account No</th>
+                    <th>Customer Name</th>
+                    <th>Type</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr data-status="active" data-type="savings">
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>ACC001</td>
+                    <td>Rajesh Kumar</td>
+                    <td>Savings</td>
+                    <td>₹45,230</td>
+                    <td><span class="status status-active">Active</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="viewAccount('ACC001')">View</button>
+                        <button class="btn btn-success btn-small" onclick="editAccount('ACC001')">Edit</button>
+                    </td>
+                </tr>
+                <tr data-status="active" data-type="current">
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>ACC002</td>
+                    <td>Priya Sharma</td>
+                    <td>Current</td>
+                    <td>₹1,25,000</td>
+                    <td><span class="status status-active">Active</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="viewAccount('ACC002')">View</button>
+                        <button class="btn btn-success btn-small" onclick="editAccount('ACC002')">Edit</button>
+                    </td>
+                </tr>
+                <tr data-status="inactive" data-type="savings">
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>ACC003</td>
+                    <td>Amit Patel</td>
+                    <td>Savings</td>
+                    <td>₹12,450</td>
+                    <td><span class="status status-inactive">Inactive</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="viewAccount('ACC003')">View</button>
+                        <button class="btn btn-success btn-small" onclick="editAccount('ACC003')">Edit</button>
+                    </td>
+                </tr>
+                <tr data-status="active" data-type="savings">
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>ACC004</td>
+                    <td>Sneha Reddy</td>
+                    <td>Savings</td>
+                    <td>₹67,890</td>
+                    <td><span class="status status-active">Active</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="viewAccount('ACC004')">View</button>
+                        <button class="btn btn-success btn-small" onclick="editAccount('ACC004')">Edit</button>
+                    </td>
+                </tr>
+                <tr data-status="active" data-type="current">
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>ACC005</td>
+                    <td>Vikram Singh</td>
+                    <td>Current</td>
+                    <td>₹2,34,560</td>
+                    <td><span class="status status-active">Active</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-small" onclick="viewAccount('ACC005')">View</button>
+                        <button class="btn btn-success btn-small" onclick="editAccount('ACC005')">Edit</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <button onclick="changePage(1)" class="active">1</button>
+            <button onclick="changePage(2)">2</button>
+            <button onclick="changePage(3)">3</button>
+        </div>
+    </div>
+
+    <!-- Add Account Modal -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3>Add New Account</h3>
+            <form onsubmit="return addAccount(event)">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Customer Name</label>
+                    <input type="text" id="newName" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Account Type</label>
+                    <select id="newType" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="savings">Savings</option>
+                        <option value="current">Current</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Create Account</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function filterTable() {
+            let search = document.getElementById('searchInput').value.toLowerCase();
+            let status = document.getElementById('statusFilter').value;
+            let type = document.getElementById('typeFilter').value;
+            
+            let rows = document.querySelectorAll('#tableBody tr');
+            
+            rows.forEach(row => {
+                let text = row.textContent.toLowerCase();
+                let rowStatus = row.getAttribute('data-status');
+                let rowType = row.getAttribute('data-type');
+                
+                let matchSearch = text.includes(search);
+                let matchStatus = status === 'all' || rowStatus === status;
+                let matchType = type === 'all' || rowType === type;
+                
+                if (matchSearch && matchStatus && matchType) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('typeFilter').value = 'all';
+            filterTable();
+        }
+        
+        function toggleSelectAll() {
+            let checked = document.getElementById('selectAll').checked;
+            document.querySelectorAll('.row-checkbox').forEach(cb => {
+                cb.checked = checked;
+            });
+        }
+        
+        function viewAccount(id) {
+            alert('Viewing details for account: ' + id);
+        }
+        
+        function editAccount(id) {
+            alert('Editing account: ' + id);
+        }
+        
+        function changePage(page) {
+            document.querySelectorAll('.pagination button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            alert('Loading page ' + page);
+        }
+        
+        function showAddModal() {
+            document.getElementById('addModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('show');
+        }
+        
+        function addAccount(e) {
+            e.preventDefault();
+            let name = document.getElementById('newName').value;
+            let type = document.getElementById('newType').value;
+            
+            if (name) {
+                alert('Account created for ' + name + ' (' + type + ')');
+                closeModal();
+            }
+            return false;
+        }
+        
+        function logout() {
+            if (confirm('Logout?')) {
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

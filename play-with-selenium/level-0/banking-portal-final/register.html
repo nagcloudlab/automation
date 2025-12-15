@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Banking Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 500px; 
+            margin: 30px auto; 
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        h1 { color: #333; margin-bottom: 10px; font-size: 24px; }
+        h2 { color: #666; margin-bottom: 20px; font-size: 18px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button { 
+            padding: 10px 20px; 
+            margin: 10px 5px 5px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .error { color: red; font-size: 12px; margin-top: 3px; display: block; }
+        .link { color: #667eea; text-decoration: none; }
+        .link:hover { text-decoration: underline; }
+        .footer { margin-top: 15px; text-align: center; }
+        .radio-group, .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        .radio-group label, .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+        }
+        .radio-group input, .checkbox-group input {
+            width: auto;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Banking Portal</h1>
+        <h2>New User Registration</h2>
+        
+        <form id="registerForm" onsubmit="return handleRegister(event)">
+            <div class="form-group">
+                <label for="fullName">Full Name *</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Enter full name">
+                <span class="error" id="fullNameError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" placeholder="your.email@example.com">
+                <span class="error" id="emailError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="mobile">Mobile Number *</label>
+                <input type="tel" id="mobile" name="mobile" placeholder="10-digit mobile number" maxlength="10">
+                <span class="error" id="mobileError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth *</label>
+                <input type="date" id="dob" name="dob">
+                <span class="error" id="dobError"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Gender *</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="gender" value="male"> Male</label>
+                    <label><input type="radio" name="gender" value="female"> Female</label>
+                    <label><input type="radio" name="gender" value="other"> Other</label>
+                </div>
+                <span class="error" id="genderError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="accountType">Account Type *</label>
+                <select id="accountType" name="accountType">
+                    <option value="">Select Account Type</option>
+                    <option value="savings">Savings</option>
+                    <option value="current">Current</option>
+                </select>
+                <span class="error" id="accountTypeError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" rows="3" placeholder="Enter your address"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="regPassword">Password *</label>
+                <input type="password" id="regPassword" name="regPassword" placeholder="Minimum 6 characters">
+                <span class="error" id="regPasswordError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password *</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password">
+                <span class="error" id="confirmPasswordError"></span>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="newsletter" name="newsletter">
+                <label for="newsletter">Subscribe to newsletter</label>
+            </div>
+
+            <div class="checkbox-group" style="margin-top: 10px;">
+                <input type="checkbox" id="regTerms" name="regTerms">
+                <label for="regTerms">I accept Terms & Conditions *</label>
+            </div>
+            <span class="error" id="regTermsError"></span>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="button" class="btn btn-secondary" onclick="clearRegForm()">Clear</button>
+
+            <div class="footer">
+                <a href="login.html" class="link">Already have an account? Login</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function handleRegister(e) {
+            e.preventDefault();
+            clearErrors();
+            
+            let fullName = document.getElementById('fullName').value.trim();
+            let email = document.getElementById('email').value.trim();
+            let mobile = document.getElementById('mobile').value.trim();
+            let dob = document.getElementById('dob').value;
+            let gender = document.querySelector('input[name="gender"]:checked');
+            let accountType = document.getElementById('accountType').value;
+            let password = document.getElementById('regPassword').value;
+            let confirmPassword = document.getElementById('confirmPassword').value;
+            let terms = document.getElementById('regTerms').checked;
+            
+            let isValid = true;
+            
+            if (fullName === '' || fullName.length < 3) {
+                showError('fullNameError', 'Full name required (min 3 characters)');
+                isValid = false;
+            }
+            
+            if (email === '') {
+                showError('emailError', 'Email is required');
+                isValid = false;
+            }
+            
+            if (mobile === '' || mobile.length !== 10) {
+                showError('mobileError', 'Enter valid 10-digit mobile number');
+                isValid = false;
+            }
+            
+            if (dob === '') {
+                showError('dobError', 'Date of birth is required');
+                isValid = false;
+            }
+            
+            if (!gender) {
+                showError('genderError', 'Please select gender');
+                isValid = false;
+            }
+            
+            if (accountType === '') {
+                showError('accountTypeError', 'Please select account type');
+                isValid = false;
+            }
+            
+            if (password === '' || password.length < 6) {
+                showError('regPasswordError', 'Password must be at least 6 characters');
+                isValid = false;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            }
+            
+            if (!terms) {
+                showError('regTermsError', 'You must accept terms and conditions');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                alert('Registration Successful!\n\nAccount created for: ' + fullName + '\nEmail: ' + email + '\n\nYou can now login!');
+                window.location.href = 'login.html';
+            }
+            
+            return false;
+        }
+        
+        function showError(id, msg) {
+            document.getElementById(id).textContent = msg;
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.error').forEach(el => el.textContent = '');
+        }
+        
+        function clearRegForm() {
+            document.getElementById('registerForm').reset();
+            clearErrors();
+        }
+    </script>
+</body>
+</html>

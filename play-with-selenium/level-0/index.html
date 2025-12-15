@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPCI Banking Portal - Selenium Training</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 800px; 
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; text-align: center; }
+        h2 { color: #333; margin-bottom: 20px; text-align: center; font-weight: normal; }
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .feature {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .feature h3 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .feature p {
+            font-size: 14px;
+            color: #666;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 5px;
+            text-align: center;
+        }
+        .btn:hover { background: #5568d3; }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover { background: #5a6268; }
+        .buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .info-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #2196F3;
+        }
+        .info-box h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+        .credentials {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+        .page-list {
+            list-style: none;
+            padding: 0;
+        }
+        .page-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .page-list li:last-child {
+            border-bottom: none;
+        }
+        .page-list a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .page-list a:hover {
+            text-decoration: underline;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .stat {
+            flex: 1;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 NPCI Banking Portal</h1>
+        <h2>Selenium WebDriver Training Application</h2>
+        
+        <div class="welcome-text">
+            <p><strong>Welcome to the complete Selenium training platform!</strong></p>
+            <p>This lightweight application covers all Selenium concepts from basic locators to advanced async handling.</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="pageCount">8</div>
+                <div class="stat-label">Pages</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="conceptCount">30+</div>
+                <div class="stat-label">Concepts</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="scenarioCount">100+</div>
+                <div class="stat-label">Test Scenarios</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>✓ All Locators</h3>
+                <p>ID, Name, Class, CSS, XPath, LinkText</p>
+            </div>
+            <div class="feature">
+                <h3>✓ All Elements</h3>
+                <p>Forms, Tables, Dropdowns, Alerts</p>
+            </div>
+            <div class="feature">
+                <h3>✓ Async Loading</h3>
+                <p>8 wait scenarios, AJAX, dynamic content</p>
+            </div>
+            <div class="feature">
+                <h3>✓ File Operations</h3>
+                <p>Upload, Download, iFrames</p>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>🔐 Test Credentials</h3>
+            <div class="credentials">
+                <strong>Username:</strong> admin<br>
+                <strong>Password:</strong> admin123<br>
+                <strong>User Type:</strong> Customer
+            </div>
+        </div>
+
+        <div class="buttons">
+            <a href="login.html" class="btn" id="getStartedBtn">Get Started - Login</a>
+            <a href="test-scenarios.html" class="btn btn-secondary" id="viewScenariosBtn">View Test Scenarios</a>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <h3 style="color: #333; margin-bottom: 15px;">📄 All Pages:</h3>
+            <ul class="page-list">
+                <li><a href="login.html" id="linkLogin">Login Page</a> - Forms, validation, locators</li>
+                <li><a href="register.html" id="linkRegister">Registration</a> - All input types, radio, checkboxes</li>
+                <li><a href="dashboard.html" id="linkDashboard">Dashboard</a> - Cards, tables, navigation</li>
+                <li><a href="transactions.html" id="linkTransactions">Transactions</a> - Tabs, dynamic forms</li>
+                <li><a href="accounts.html" id="linkAccounts">Accounts</a> - Table, search, filters, modal</li>
+                <li><a href="reports.html" id="linkReports">Reports</a> - Alerts, file upload, iFrame</li>
+                <li><a href="dynamic-data.html" id="linkDynamic">Dynamic Data</a> - Async loading, waits</li>
+                <li><a href="test-scenarios.html" id="linkScenarios">Test Scenarios</a> - Quick reference</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 14px;">
+            NPCI Banking Portal v2.0 | Created for Selenium Training | 2024
+        </div>
+    </div>
+
+    <script>
+        // Add animation on load
+        window.addEventListener('load', () => {
+            document.querySelector('.container').style.opacity = '0';
+            document.querySelector('.container').style.transform = 'translateY(20px)';
+            document.querySelector('.container').style.transition = 'all 0.5s';
+            
+            setTimeout(() => {
+                document.querySelector('.container').style.opacity = '1';
+                document.querySelector('.container').style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Banking Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f5f5f5;
+        }
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 20px; }
+        .btn { 
+            padding: 8px 15px; 
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .btn-light { background: white; color: #667eea; }
+        .btn-danger { background: #dc3545; color: white; }
+        nav {
+            background: #34495e;
+            padding: 0;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        nav li { flex: 1; }
+        nav a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover, nav a.active { background: #2c3e50; }
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h2 { margin-bottom: 20px; color: #333; }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card h3 { color: #667eea; margin-bottom: 10px; }
+        .card .amount { font-size: 28px; font-weight: bold; color: #333; }
+        .card .label { color: #999; font-size: 14px; margin-top: 5px; }
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        tr:hover { background: #f8f9fa; }
+        .status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-success { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .btn-small { padding: 6px 12px; font-size: 12px; }
+        .btn-primary { background: #667eea; color: white; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏦 Banking Portal</h1>
+        <div>
+            <span id="welcomeUser">Welcome, Admin</span>
+            <button class="btn btn-danger" onclick="logout()" style="margin-left: 15px;">Logout</button>
+        </div>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="dashboard.html" class="active" id="navDashboard">Dashboard</a></li>
+            <li><a href="transactions.html" id="navTransactions">Transactions</a></li>
+            <li><a href="accounts.html" id="navAccounts">Accounts</a></li>
+            <li><a href="reports.html" id="navReports">Reports</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h2>Dashboard</h2>
+        
+        <div class="cards">
+            <div class="card">
+                <h3>Account Balance</h3>
+                <div class="amount" id="balance">₹1,25,430</div>
+                <div class="label">Available Balance</div>
+            </div>
+            
+            <div class="card">
+                <h3>Total Transactions</h3>
+                <div class="amount" id="totalTxn">156</div>
+                <div class="label">This Month</div>
+            </div>
+            
+            <div class="card">
+                <h3>Pending Payments</h3>
+                <div class="amount" id="pending">3</div>
+                <div class="label">Awaiting Action</div>
+            </div>
+            
+            <div class="card">
+                <h3>Last Transaction</h3>
+                <div class="amount">₹5,000</div>
+                <div class="label">2 hours ago</div>
+            </div>
+        </div>
+
+        <h3>Recent Transactions</h3>
+        <table id="transactionTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Transaction ID</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2024-12-15</td>
+                    <td>TXN001</td>
+                    <td>UPI Payment</td>
+                    <td>₹500</td>
+                    <td><span class="status status-success">Success</span></td>
+                    <td><button class="btn btn-primary btn-small" onclick="viewDetails('TXN001')">View</button></td>
+                </tr>
+                <tr>
+                    <td>2024-12-14</td>
+                    <td>TXN002</td>
+                    <td>NEFT</td>
+                    <td>₹10,000</td>
+                    <td><span class="status status-success">Success</span></td>
+                    <td><button class="btn btn-primary btn-small" onclick="viewDetails('TXN002')">View</button></td>
+                </tr>
+                <tr>
+                    <td>2024-12-14</td>
+                    <td>TXN003</td>
+                    <td>Withdrawal</td>
+                    <td>₹5,000</td>
+                    <td><span class="status status-pending">Pending</span></td>
+                    <td><button class="btn btn-primary btn-small" onclick="viewDetails('TXN003')">View</button></td>
+                </tr>
+                <tr>
+                    <td>2024-12-13</td>
+                    <td>TXN004</td>
+                    <td>Deposit</td>
+                    <td>₹20,000</td>
+                    <td><span class="status status-success">Success</span></td>
+                    <td><button class="btn btn-primary btn-small" onclick="viewDetails('TXN004')">View</button></td>
+                </tr>
+                <tr>
+                    <td>2024-12-12</td>
+                    <td>TXN005</td>
+                    <td>UPI Payment</td>
+                    <td>₹1,200</td>
+                    <td><span class="status status-success">Success</span></td>
+                    <td><button class="btn btn-primary btn-small" onclick="viewDetails('TXN005')">View</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logged out successfully!');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        function viewDetails(txnId) {
+            alert('Transaction Details:\nID: ' + txnId + '\nClick OK to view full details');
+        }
+    </script>
+</body>
+</html>

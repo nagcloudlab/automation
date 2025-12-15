@@ -1,4 +1,8 @@
 package org.example.json;
 
-public class TransferStatus {
+public enum TransferStatus {
+    SUCCESS,
+    PENDING,
+    FAILED,
+    REVERSED
 }

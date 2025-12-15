@@ -68,8 +68,8 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;fromUpiId&quot;: &quot;user${__threadNum}@paytm&quot;,&#xd;
-  &quot;toUpiId&quot;: &quot;merchant@phonepe&quot;,&#xd;
+  &quot;fromUpiId&quot;: &quot;user${__threadNum}@upi&quot;,&#xd;
+  &quot;toUpiId&quot;: &quot;user99@upi&quot;,&#xd;
   &quot;amount&quot;: ${__Random(1000,8000)},&#xd;
   &quot;remarks&quot;: &quot;Test Payment for PostProcessor&quot;&#xd;
 }</stringProp>
@@ -79,7 +79,7 @@
             </elementProp>
           </HTTPSamplerProxy>
           <hashTree>
-            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer">
               <stringProp name="ConstantTimer.delay">300</stringProp>
             </ConstantTimer>
             <hashTree/>
