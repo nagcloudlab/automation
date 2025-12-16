@@ -1,9 +1,0 @@
-
-
-cd transfer-service
-
-# H2 Profile (default - for REST Assured testing)
-mvn spring-boot:run
-
-# PostgreSQL Profile
-mvn spring-boot:run -Dspring.profiles.active=postgresql

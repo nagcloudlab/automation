@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class BaseTest {
 
@@ -21,7 +22,13 @@ public class BaseTest {
     @BeforeEach
     public void setUp(TestInfo testInfo) {
         // Create new browser for each test
-        driver = new ChromeDriver();
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");   // recommended for Chrome 109+
+        options.addArguments("--window-size=1920,1080");
+        options.addArguments("--disable-gpu");
+
+        driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         System.out.println("\n✓ Browser started for: " + testInfo.getDisplayName());
     }
