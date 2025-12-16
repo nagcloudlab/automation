@@ -2,9 +2,7 @@ package com.npci.training.level1;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 
@@ -80,6 +78,17 @@ public class Test04_CompleteLoginTests {
         
         // Wait for navigation
         Thread.sleep(2000);
+
+        try {
+            Alert alert = driver.switchTo().alert();
+            String alertText = alert.getText();
+            System.out.println("✓ Alert detected: " + alertText);
+            alert.accept();  // Click OK
+            System.out.println("✓ Alert accepted");
+            Thread.sleep(1000);
+        } catch (NoAlertPresentException e) {
+            System.out.println("No alert present");
+        }
         
         // Verify navigation to dashboard
         String currentUrl = driver.getCurrentUrl();

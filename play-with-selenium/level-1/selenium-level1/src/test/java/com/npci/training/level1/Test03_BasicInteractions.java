@@ -157,7 +157,6 @@ public class Test03_BasicInteractions {
         System.out.println("\n=== Testing clear() ===");
 
         WebElement username = driver.findElement(By.id("username"));
-
         // Enter text
         username.sendKeys("testuser");
         Thread.sleep(500);

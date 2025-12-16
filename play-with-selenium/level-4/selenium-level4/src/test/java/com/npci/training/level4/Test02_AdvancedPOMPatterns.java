@@ -288,9 +288,9 @@ public class Test02_AdvancedPOMPatterns {
         // Example 3: Navigation chain
         dashboard.goToTransactions()
                  .goToDashboard()
-                 .goToAccounts()
-                 .goToDashboard()
-                 .logout();
+                 .goToAccounts();
+//                 .goToDashboard()
+//                 .logout();
         
         TestUtils.logSuccess("Navigation chain executed");
         

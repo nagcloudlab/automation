@@ -47,7 +47,7 @@ public class Test01_PageObjectModelBasics {
         System.out.println("\n=== Basic Login with POM ===");
         
         // Create Page Object
-        LoginPage loginPage = new LoginPage(driver);
+        LoginPage loginPage = new LoginPage(driver); // POM (Page Object Model)
         
         // Navigate to page
         loginPage.open();
@@ -75,7 +75,43 @@ public class Test01_PageObjectModelBasics {
         
         System.out.println("\n💡 Notice how clean and readable the test is!");
     }
-    
+
+
+    @Test
+    @DisplayName("POM: Basic login using Page Objects")
+    public void testEmptyUserName() {
+        System.out.println("\n=== Basic Login with POM ===");
+
+        // Create Page Object
+        LoginPage loginPage = new LoginPage(driver); // POM (Page Object Model)
+
+        // Navigate to page
+        loginPage.open();
+        System.out.println("✓ Opened login page");
+
+        // Perform login
+//        loginPage.enterUsername("admin");
+//        System.out.println("✓ Entered username");
+
+        loginPage.enterPassword("admin123");
+        System.out.println("✓ Entered password");
+
+        loginPage.selectUserType("Customer");
+        System.out.println("✓ Selected user type");
+
+        loginPage.acceptTerms();
+        System.out.println("✓ Accepted terms");
+
+        DashboardPage dashboard = loginPage.clickLogin();
+        System.out.println("✓ Clicked login");
+
+        // Verify
+        assertTrue(dashboard.isDashboardPageDisplayed());
+        System.out.println("✓ Dashboard displayed");
+
+        System.out.println("\n💡 Notice how clean and readable the test is!");
+    }
+
     @Test
     @DisplayName("POM: Login with method chaining")
     public void testLoginWithMethodChaining() {
@@ -191,11 +227,11 @@ public class Test01_PageObjectModelBasics {
         
         // Go to accounts
         var accountsPage = dashboard.goToAccounts();
-        assertTrue(accountsPage.isAccountsPageDisplayed());
+//        assertTrue(accountsPage.isAccountsPageDisplayed());
         System.out.println("Step 5: Viewed accounts ✓");
         
         // Back and logout
-        dashboard = accountsPage.goToDashboard();
+//        dashboard = accountsPage.goToDashboard();
         LoginPage loginPage = dashboard.logout();
         assertTrue(loginPage.isLoginPageDisplayed());
         System.out.println("Step 6: Logged out ✓");

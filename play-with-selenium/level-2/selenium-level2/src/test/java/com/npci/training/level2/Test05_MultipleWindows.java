@@ -172,7 +172,7 @@ public class Test05_MultipleWindows {
     public void testWindowTitles() throws InterruptedException {
         System.out.println("\n=== Window Titles ===");
         
-        driver.get("http://localhost:8000/index.html");
+        driver.get("http://127.0.0.1:5500/level-0/banking-portal-final/login.html");
         String mainWindow = driver.getWindowHandle();
         
         // Open new windows
@@ -217,13 +217,13 @@ public class Test05_MultipleWindows {
         System.out.println("\n=== Parent-Child Window Pattern ===");
         
         // Parent window
-        driver.get("http://localhost:8000/reports.html");
+        driver.get("http://127.0.0.1:5500/level-0/banking-portal-final/reports.html");
         String parentWindow = driver.getWindowHandle();
         System.out.println("✓ Parent window opened");
         System.out.println("  Title: " + driver.getTitle());
         
         // Open child window
-        driver.findElement(By.xpath("//button[contains(text(), 'Open New Window')]")).click();
+        driver.findElement(By.xpath("/html/body/div[2]/div[6]/button[1]")).click();
         Thread.sleep(2000);
         
         // Get child window handle

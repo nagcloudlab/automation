@@ -41,7 +41,7 @@ public class LoginPage extends BasePage {
     
     // Navigation method
     public LoginPage open() {
-        driver.get("http://localhost:8000/login.html");
+        driver.get("http://127.0.0.1:5500/level-0/banking-portal-final/login.html");
         waitForTitle("Login");
         return this;
     }

@@ -65,7 +65,7 @@ public class Test03_LinkTextLocators {
     public void testPartialLinkText() throws InterruptedException {
         System.out.println("\n=== By.partialLinkText() - Partial Match ===");
         
-        driver.get("http://localhost:8000/login.html");
+        driver.get("http://127.0.0.1:5500/level-0/banking-portal-final/login.html");
         
         // Find link by partial text
         WebElement forgotPassword = driver.findElement(By.partialLinkText("Forgot"));
@@ -85,17 +85,17 @@ public class Test03_LinkTextLocators {
         System.out.println("\n=== Navigation Using Links ===");
         
         // Start at login page
-        driver.get("http://localhost:8000/login.html");
+        driver.get("http://127.0.0.1:5500/level-0/banking-portal-final/login.html");
         System.out.println("Starting URL: " + driver.getCurrentUrl());
         
         // Navigate to register
-        driver.findElement(By.linkText("Register here")).click();
+        driver.findElement(By.linkText("Register")).click();
         Thread.sleep(1500);
         assertTrue(driver.getCurrentUrl().contains("register.html"));
         System.out.println("✓ Step 1: Navigated to register.html");
         
         // Navigate back to login
-        driver.findElement(By.linkText("Login here")).click();
+        driver.findElement(By.partialLinkText("Login")).click();
         Thread.sleep(1500);
         assertTrue(driver.getCurrentUrl().contains("login.html"));
         System.out.println("✓ Step 2: Back to login.html");
@@ -109,7 +109,7 @@ public class Test03_LinkTextLocators {
         System.out.println("\n=== Dashboard Navigation Links ===");
         
         // Login first
-        driver.get("http://localhost:8000/login.html");
+        driver.get("http://127.0.0.1:5500/level-0/banking-portal-final/login.html");
         driver.findElement(By.id("username")).sendKeys("admin");
         driver.findElement(By.id("password")).sendKeys("admin123");
         driver.findElement(By.id("userType")).click();

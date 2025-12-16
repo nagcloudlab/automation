@@ -1,0 +1,7 @@
+username,password,usertype,expected
+admin,admin123,Customer,success
+user1,user123,Customer,success
+merchant1,merchant123,Merchant,success
+wrong,wrong,Customer,fail
+"","",,fail
+admin,wrongpass,Customer,fail
