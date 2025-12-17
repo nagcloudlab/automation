@@ -2,6 +2,7 @@ package com.npci.training.pages;
 
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.LoadState;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 

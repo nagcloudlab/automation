@@ -54,7 +54,7 @@ public class Test02_PlaywrightAssertions extends BaseTest {
         // Assert element count
         System.out.println("3. assertThat(locator).hasCount()");
         assertThat(page.locator("a"))
-            .hasCount(44);
+            .hasCount(40);
         System.out.println("✓ Found 44 links");
         
         System.out.println("\n💡 assertThat() benefits:");

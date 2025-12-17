@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.npci.training.level7.Test01_ExtentReportsScreenshots
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 33.26 s -- in com.npci.training.level7.Test01_ExtentReportsScreenshots

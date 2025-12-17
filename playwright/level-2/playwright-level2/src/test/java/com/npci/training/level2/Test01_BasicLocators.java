@@ -252,7 +252,7 @@ public class Test01_BasicLocators extends BaseTest {
         // Find form first, then input inside
         System.out.println("1. Chain locators: form → input");
         Locator form = page.locator("form");
-        Locator usernameInForm = form.locator("#username");
+        Locator usernameInForm = form.locator("#username"); // form #username
         usernameInForm.fill("testuser");
         System.out.println("✓ Chained: page → form → input");
         

@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.npci.training.level7.Test01_ExtentReportsScreenshots" time="33.256" tests="5" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="17"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/Users/nag/automation/playwright/level-7/playwright-level7-fixed/target/test-classes:/Users/nag/automation/playwright/level-7/playwright-level7-fixed/target/classes:/Users/nag/.m2/repository/com/microsoft/playwright/playwright/1.40.0/playwright-1.40.0.jar:/Users/nag/.m2/repository/com/google/code/gson/gson/2.8.9/gson-2.8.9.jar:/Users/nag/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/nag/.m2/repository/com/microsoft/playwright/driver/1.40.0/driver-1.40.0.jar:/Users/nag/.m2/repository/com/microsoft/playwright/driver-bundle/1.40.0/driver-bundle-1.40.0.jar:/Users/nag/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/nag/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/nag/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/nag/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/nag/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/nag/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/nag/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/nag/.m2/repository/com/aventstack/extentreports/5.1.1/extentreports-5.1.1.jar:/Users/nag/.m2/repository/io/reactivex/rxjava3/rxjava/3.1.6/rxjava-3.1.6.jar:/Users/nag/.m2/repository/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar:/Users/nag/.m2/repository/org/freemarker/freemarker/2.3.32/freemarker-2.3.32.jar:/Users/nag/.m2/repository/org/projectlombok/lombok/1.18.26/lombok-1.18.26.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-junit5/2.25.0/allure-junit5-2.25.0.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-junit-platform/2.25.0/allure-junit-platform-2.25.0.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-java-commons/2.25.0/allure-java-commons-2.25.0.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-model/2.25.0/allure-model-2.25.0.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-test-filter/2.25.0/allure-test-filter-2.25.0.jar:/Users/nag/.m2/repository/org/junit/platform/junit-platform-launcher/1.9.2/junit-platform-launcher-1.9.2.jar:/Users/nag/.m2/repository/org/slf4j/slf4j-simple/2.0.9/slf4j-simple-2.0.9.jar:/Users/nag/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="Asia/Kolkata"/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="java.vm.specification.version" value="17"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="GB"/>
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/lib"/>
+    <property name="sun.java.command" value="/Users/nag/automation/playwright/level-7/playwright-level7-fixed/target/surefire/surefirebooter-20251217142216737_3.jar /Users/nag/automation/playwright/level-7/playwright-level7-fixed/target/surefire 2025-12-17T14-22-16_594-jvmRun1 surefire-20251217142216737_1tmp surefire_0-20251217142216737_2tmp"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/Users/nag/automation/playwright/level-7/playwright-level7-fixed/target/test-classes:/Users/nag/automation/playwright/level-7/playwright-level7-fixed/target/classes:/Users/nag/.m2/repository/com/microsoft/playwright/playwright/1.40.0/playwright-1.40.0.jar:/Users/nag/.m2/repository/com/google/code/gson/gson/2.8.9/gson-2.8.9.jar:/Users/nag/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/nag/.m2/repository/com/microsoft/playwright/driver/1.40.0/driver-1.40.0.jar:/Users/nag/.m2/repository/com/microsoft/playwright/driver-bundle/1.40.0/driver-bundle-1.40.0.jar:/Users/nag/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/nag/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/nag/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/nag/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/nag/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/nag/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/nag/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/nag/.m2/repository/com/aventstack/extentreports/5.1.1/extentreports-5.1.1.jar:/Users/nag/.m2/repository/io/reactivex/rxjava3/rxjava/3.1.6/rxjava-3.1.6.jar:/Users/nag/.m2/repository/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar:/Users/nag/.m2/repository/org/freemarker/freemarker/2.3.32/freemarker-2.3.32.jar:/Users/nag/.m2/repository/org/projectlombok/lombok/1.18.26/lombok-1.18.26.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-junit5/2.25.0/allure-junit5-2.25.0.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-junit-platform/2.25.0/allure-junit-platform-2.25.0.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-java-commons/2.25.0/allure-java-commons-2.25.0.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-model/2.25.0/allure-model-2.25.0.jar:/Users/nag/.m2/repository/io/qameta/allure/allure-test-filter/2.25.0/allure-test-filter-2.25.0.jar:/Users/nag/.m2/repository/org/junit/platform/junit-platform-launcher/1.9.2/junit-platform-launcher-1.9.2.jar:/Users/nag/.m2/repository/org/slf4j/slf4j-simple/2.0.9/slf4j-simple-2.0.9.jar:/Users/nag/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/Users/nag"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2023-07-18"/>
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/Users/nag/automation/playwright/level-7/playwright-level7-fixed"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="surefire.real.class.path" value="/Users/nag/automation/playwright/level-7/playwright-level7-fixed/target/surefire/surefirebooter-20251217142216737_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="java.runtime.version" value="17.0.8+9-LTS-211"/>
+    <property name="user.name" value="nag"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="12.7.5"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="localRepository" value="/Users/nag/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="/var/folders/ng/r5gmmyl54bbgwb6q70q1cb480000gn/T/"/>
+    <property name="java.version" value="17.0.8"/>
+    <property name="user.dir" value="/Users/nag/automation/playwright/level-7/playwright-level7-fixed"/>
+    <property name="os.arch" value="x86_64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/Users/nag/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="17.0.8+9-LTS-211"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="java.class.version" value="61.0"/>
+  </properties>
+  <testcase name="test01_ReportingIntro" classname="com.npci.training.level7.Test01_ExtentReportsScreenshots" time="0.603">
+    <system-out><![CDATA[
+╔════════════════════════════════════════════╗
+║   PLAYWRIGHT LEVEL 7: REPORTS & SCREENSHOTS║
+╚════════════════════════════════════════════╝
+
+✓ Extent Reports initialized: reports/ExtentReport_2025-12-17_14-22-17.html
+✓ Extent Reports initialized
+✓ Playwright initialized
+✓ Browser launched
+
+╔════════════════════════════════════════════╗
+║  STARTING: Test 1: Basic reporting introduction
+╚════════════════════════════════════════════╝
+  → Starting reporting introduction
+
+=== Test 01: Reporting Introduction ===
+
+📊 TEST REPORTING:
+
+WHY REPORTING?
+✅ Share results with team
+✅ Track test execution history
+✅ Identify failing tests quickly
+✅ Screenshots for debugging
+✅ Professional presentation
+✅ Stakeholder communication
+
+WHAT'S INCLUDED IN REPORTS?
+1. Test execution status (Pass/Fail)
+2. Test duration
+3. Error messages
+4. Screenshots
+5. Logs and steps
+6. System information
+7. Test hierarchy
+8. Filters and search
+
+POPULAR REPORTING TOOLS:
+- Extent Reports (HTML, beautiful UI)
+- Allure Reports (Rich features)
+- TestNG Reports (Built-in)
+- Custom HTML Reports
+
+THIS LEVEL USES:
+✅ Extent Reports (most popular)
+✅ Beautiful HTML output
+✅ Screenshots embedded
+✅ Dark/Light themes
+✅ Easy to customize
+
+  → Reporting introduction completed
+Duration: 529ms
+╚════════════════════════════════════════════╝
+
+✅ PASSED: Test 1: Basic reporting introduction
+]]></system-out>
+  </testcase>
+  <testcase name="test02_LoggingSteps" classname="com.npci.training.level7.Test01_ExtentReportsScreenshots" time="6.726">
+    <system-out><![CDATA[
+╔════════════════════════════════════════════╗
+║  STARTING: Test 2: Logging test steps
+╚════════════════════════════════════════════╝
+
+=== Test 02: Logging Steps ===
+  → Navigate to The Internet Herokuapp
+  → Home page loaded
+  → Click on 'Form Authentication'
+  → Login page displayed
+  → Enter username: tomsmith
+  → Enter password
+  → Credentials entered
+  → Click login button
+  → Verify login successful
+  → Login successful
+
+💡 LOGGING STEPS:
+
+HOW TO LOG:
+
+1. SIMPLE LOG:
+   logStep("Navigate to login page");
+   page.navigate("/login");
+
+2. LOG WITH SCREENSHOT:
+   logWithScreenshot("Login page displayed");
+
+3. DIRECT EXTENT LOG:
+   ExtentReportsManager.logInfo("Step description");
+   ExtentReportsManager.logPass("Verification passed");
+   ExtentReportsManager.logFail("Test failed");
+
+4. LOG AND SCREENSHOT:
+   logStep("Enter username");
+   page.fill("#username", "admin");
+
+   String base64 = ScreenshotUtils.takeScreenshotBase64(page);
+   ExtentReportsManager.attachScreenshotBase64(base64, "Username entered");
+
+BENEFITS:
+✅ Clear test flow in report
+✅ Visual evidence with screenshots
+✅ Easy debugging
+✅ Stakeholder understanding
+
+Duration: 6721ms
+╚════════════════════════════════════════════╝
+
+✅ PASSED: Test 2: Logging test steps
+]]></system-out>
+  </testcase>
+  <testcase name="test03_ScreenshotOnFailure" classname="com.npci.training.level7.Test01_ExtentReportsScreenshots" time="11.482">
+    <system-out><![CDATA[
+╔════════════════════════════════════════════╗
+║  STARTING: Test 3: Screenshot on failure (intentional)
+╚════════════════════════════════════════════╝
+
+=== Test 03: Screenshot on Failure ===
+  → Navigate to login page
+  → Login page loaded
+  → Enter incorrect credentials
+  → Wrong credentials entered
+  → Click login button
+  → Verify login successful (will fail)
+  → Login failed - Error message displayed
+
+💡 SCREENSHOT ON FAILURE:
+
+AUTOMATIC SCREENSHOT:
+- Captured in @AfterEach if testFailed = true
+- Attached to Extent Report
+- Saved to screenshots folder
+
+HOW IT WORKS:
+
+1. In @AfterEach:
+   if (testFailed && page != null) {
+       String path = ScreenshotUtils.takeScreenshotOnFailure(
+           page, testInfo.getDisplayName());
+
+       String base64 = ScreenshotUtils.takeScreenshotBase64(page);
+       ExtentReportsManager.attachScreenshotBase64(base64, "Failure");
+   }
+
+2. Mark test as failed:
+   try {
+       // Test logic
+   } catch (Exception e) {
+       markTestFailed();
+       throw e;
+   }
+
+BENEFITS:
+✅ Automatic failure screenshots
+✅ No manual screenshot code
+✅ Attached to reports
+✅ Easy debugging
+✅ Visual evidence
+
+📸 Screenshot saved: screenshots/FAILED_Test_3__Screenshot_on_failure__intentional__20251217_142240_522.png
+📸 Failure screenshot captured
+Duration: 11478ms
+╚════════════════════════════════════════════╝
+
+✅ PASSED: Test 3: Screenshot on failure (intentional)
+]]></system-out>
+  </testcase>
+  <testcase name="test04_BankingFlowWithReporting" classname="com.npci.training.level7.Test01_ExtentReportsScreenshots" time="8.51">
+    <system-out><![CDATA[
+╔════════════════════════════════════════════╗
+║  STARTING: Test 4: Complete banking flow with reporting
+╚════════════════════════════════════════════╝
+
+=== Test 04: Banking Flow with Reporting ===
+  → Step 1: Navigate to banking portal
+  → Banking portal home page
+  → Step 2: Enter username
+  → Step 3: Enter password
+  → Credentials entered
+  → Step 4: Click login button
+  → After login click
+  → Step 5: Verify login successful
+  → Dashboard loaded successfully
+  → Step 6: Click logout
+  → After logout
+  → Step 7: Verify logout successful
+  → Logged out successfully
+
+💡 COMPLETE TEST REPORTING:
+
+BEST PRACTICES:
+
+1. LOG EVERY MAJOR STEP:
+   logStep("Navigate to dashboard");
+   logStep("Click transfer button");
+   logStep("Enter amount");
+
+2. SCREENSHOT IMPORTANT STATES:
+   - Before action
+   - After action
+   - On verification
+   - On failure
+
+3. USE PROPER LOG LEVELS:
+   ExtentReportsManager.logInfo("Navigation");
+   ExtentReportsManager.logPass("Verification passed");
+   ExtentReportsManager.logFail("Test failed");
+   ExtentReportsManager.logWarning("Warning message");
+
+4. CLEAR STEP DESCRIPTIONS:
+   ✅ "Step 1: Navigate to login page"
+   ✅ "Step 2: Enter username: admin"
+   ❌ "Do something"
+   ❌ "Test step"
+
+5. ATTACH SCREENSHOTS:
+   - Key checkpoints
+   - Before/after actions
+   - Failure states
+   - Success states
+
+REPORT STRUCTURE:
+
+Test: Banking Login Flow
+├── Step 1: Navigate to portal [Screenshot]
+├── Step 2: Enter username [Log]
+├── Step 3: Enter password [Screenshot]
+├── Step 4: Click login [Log]
+├── Step 5: Verify success [Screenshot]
+└── Status: PASSED ✅
+
+Duration: 3.5s
+Screenshots: 5
+
+Duration: 8505ms
+╚════════════════════════════════════════════╝
+
+✅ PASSED: Test 4: Complete banking flow with reporting
+]]></system-out>
+  </testcase>
+  <testcase name="test05_ReportFeatures" classname="com.npci.training.level7.Test01_ExtentReportsScreenshots" time="0.332">
+    <system-out><![CDATA[
+╔════════════════════════════════════════════╗
+║  STARTING: Test 5: Report features demonstration
+╚════════════════════════════════════════════╝
+
+=== Test 05: Report Features ===
+
+📊 EXTENT REPORTS FEATURES:
+
+WHAT'S IN THE REPORT?
+
+1. DASHBOARD:
+   - Total tests
+   - Pass/Fail/Skip count
+   - Pass percentage
+   - Execution time
+   - Environment info
+
+2. TEST DETAILS:
+   - Test name
+   - Test status
+   - Duration
+   - Steps/Logs
+   - Screenshots
+   - Error messages
+   - Stack traces
+
+3. SYSTEM INFO:
+   - Application name
+   - Environment (QA/UAT/Prod)
+   - Browser
+   - OS
+   - Java version
+   - User
+
+4. FEATURES:
+   - Search tests
+   - Filter by status
+   - Timeline view
+   - Category view
+   - Export options
+   - Dark/Light theme
+
+5. SCREENSHOTS:
+   - Embedded in report
+   - Click to enlarge
+   - Multiple per test
+   - Failure screenshots
+   - Step screenshots
+
+HOW TO VIEW REPORT:
+
+1. Run tests:
+   mvn test
+
+2. Report generated at:
+   reports/ExtentReport_2024-12-17_10-30-45.html
+
+3. Open in browser:
+   - Double click HTML file
+   - OR right-click → Open with browser
+
+4. Navigate report:
+   - Click tests to see details
+   - View screenshots
+   - Check logs
+   - Filter by status
+
+CUSTOMIZATION:
+
+1. Change theme:
+   sparkReporter.config().setTheme(Theme.DARK);
+   sparkReporter.config().setTheme(Theme.STANDARD);
+
+2. Add custom info:
+   extent.setSystemInfo("Sprint", "Sprint 23");
+   extent.setSystemInfo("Build", "1.2.3");
+
+3. Custom report name:
+   String name = "BankingTests_" + timestamp + ".html";
+
+4. Custom CSS:
+   sparkReporter.config().setCss("custom.css");
+
+SHARING REPORTS:
+
+1. Email:
+   - Attach HTML file
+   - All screenshots embedded
+
+2. Shared drive:
+   - Copy to network location
+   - Team can access
+
+3. CI/CD:
+   - Archive in Jenkins
+   - Publish as artifact
+   - Email on failure
+
+4. Cloud storage:
+   - Upload to S3/GCS
+   - Share link
+
+Duration: 329ms
+╚════════════════════════════════════════════╝
+
+✅ PASSED: Test 5: Report features demonstration
+]]></system-out>
+  </testcase>
+</testsuite>
