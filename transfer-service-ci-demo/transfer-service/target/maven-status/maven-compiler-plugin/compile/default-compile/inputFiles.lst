@@ -1,0 +1,6 @@
+/Users/nag/automation/transfer-service-ci-demo/transfer-service/src/main/java/com/demo/transfer/TransferServiceApplication.java
+/Users/nag/automation/transfer-service-ci-demo/transfer-service/src/main/java/com/demo/transfer/controller/HomeController.java
+/Users/nag/automation/transfer-service-ci-demo/transfer-service/src/main/java/com/demo/transfer/controller/TransferController.java
+/Users/nag/automation/transfer-service-ci-demo/transfer-service/src/main/java/com/demo/transfer/model/TransferRequest.java
+/Users/nag/automation/transfer-service-ci-demo/transfer-service/src/main/java/com/demo/transfer/model/TransferResponse.java
+/Users/nag/automation/transfer-service-ci-demo/transfer-service/src/main/java/com/demo/transfer/service/TransferService.java

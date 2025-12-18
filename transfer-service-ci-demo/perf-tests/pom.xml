@@ -10,7 +10,7 @@
     <artifactId>perf-tests</artifactId>
 
     <properties>
-        <baseUrl>http://localhost:8080</baseUrl>
+        <baseUrl>http://localhost:8080/</baseUrl>
     </properties>
 
     <build>
@@ -62,9 +62,9 @@
                     <generateReports>true</generateReports>
 
                     <!-- Pass baseUrl to JMeter test -->
-                    <propertiesUser>
-                        <baseUrl>${baseUrl}</baseUrl>
-                    </propertiesUser>
+<!--                    <propertiesUser>-->
+<!--                        <baseUrl>${baseUrl}</baseUrl>-->
+<!--                    </propertiesUser>-->
 
                     <!-- JMeter properties -->
                     <jmeterProperties>

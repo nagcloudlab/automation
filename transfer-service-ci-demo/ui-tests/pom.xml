@@ -36,27 +36,6 @@
             </plugin>
 
             <!-- Install browsers in CI -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <id>playwright-install</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>com.microsoft.playwright.CLI</mainClass>
-                            <arguments>
-                                <argument>install</argument>
-                                <argument>--with-deps</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>
