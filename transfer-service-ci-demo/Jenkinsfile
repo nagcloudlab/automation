@@ -4,8 +4,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-              sh 'cd transfer-service-ci-demo/api-tests'
-              sh 'mvn clean test-compile'
+              dir('transfer-service-ci-demo/api-tests')  {
+                 sh 'mvn clean test-compile'
+              }
             }
         }
         stage('Test') {
