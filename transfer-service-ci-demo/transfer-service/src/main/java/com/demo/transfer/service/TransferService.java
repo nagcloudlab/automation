@@ -14,6 +14,6 @@ public class TransferService {
             Thread.sleep(50);
         } catch (InterruptedException ignored) {}
 
-        return new TransferResponse("SUCCESS");
+        return new TransferResponse("SUCCESSS");
     }
 }
