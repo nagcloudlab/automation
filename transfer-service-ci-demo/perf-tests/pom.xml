@@ -9,39 +9,74 @@
 
     <artifactId>perf-tests</artifactId>
 
+    <properties>
+        <baseUrl>http://localhost:8080</baseUrl>
+    </properties>
+
     <build>
         <plugins>
 
-            <!-- Run JMeter via CLI (NO jmeter-maven-plugin) -->
+            <!-- JMeter Maven Plugin -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.3.0</version>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>3.8.0</version>
 
                 <executions>
+                    <!-- Step 1: Configure JMeter (generates config.json) -->
                     <execution>
-                        <id>run-jmeter</id>
-                        <phase>verify</phase>
+                        <id>configuration</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>configure</goal>
                         </goals>
-                        <configuration>
-                            <executable>jmeter</executable>
-                            <arguments>
-                                <argument>-n</argument>
-                                <argument>-t</argument>
-                                <argument>${project.basedir}/src/test/jmeter/transfer_load_test.jmx</argument>
-                                <argument>-JbaseUrl=${baseUrl}</argument>
-                                <argument>-l</argument>
-                                <argument>${project.build.directory}/results.jtl</argument>
-                                <argument>-e</argument>
-                                <argument>-o</argument>
-                                <argument>${project.build.directory}/report</argument>
-                            </arguments>
-                        </configuration>
+                    </execution>
+
+                    <!-- Step 2: Run JMeter tests -->
+                    <execution>
+                        <id>jmeter-tests</id>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Step 3: Generate HTML reports -->
+                    <execution>
+                        <id>jmeter-check-results</id>
+                        <goals>
+                            <goal>results</goal>
+                        </goals>
                     </execution>
                 </executions>
 
+                <configuration>
+                    <!-- Test files location -->
+                    <testFilesDirectory>${project.basedir}/src/test/jmeter</testFilesDirectory>
+                    <testFilesIncluded>
+                        <jMeterTestFile>transfer_load_test.jmx</jMeterTestFile>
+                    </testFilesIncluded>
+
+                    <!-- Results directory -->
+                    <resultsDirectory>${project.build.directory}/jmeter/results</resultsDirectory>
+
+                    <!-- Auto-generate HTML reports -->
+                    <generateReports>true</generateReports>
+
+                    <!-- Pass baseUrl to JMeter test -->
+                    <propertiesUser>
+                        <baseUrl>${baseUrl}</baseUrl>
+                    </propertiesUser>
+
+                    <!-- JMeter properties -->
+                    <jmeterProperties>
+                        <jmeter.save.saveservice.thread_counts>true</jmeter.save.saveservice.thread_counts>
+                    </jmeterProperties>
+
+                    <!-- Don't fail build on test failures -->
+                    <ignoreResultFailures>true</ignoreResultFailures>
+
+                    <!-- JMeter version -->
+                    <jmeterVersion>5.6.3</jmeterVersion>
+                </configuration>
             </plugin>
 
         </plugins>
