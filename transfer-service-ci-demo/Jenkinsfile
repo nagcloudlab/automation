@@ -1,14 +1,8 @@
 pipeline {
     agent any
     
-    // tools {
-    //     jdk 'jdk17'
-    //     maven 'maven3'
-    // }
-    
     options {
         timestamps()
-        ansiColor('xterm')
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
@@ -32,6 +26,10 @@ pipeline {
                 echo '=================================================='
                 dir("${PROJECT_DIR}") {
                     sh '''
+                        # Use local Java and Maven
+                        java -version
+                        mvn -version
+                        
                         mvn -B -ntp clean package -DskipTests
                         
                         # Verify JAR was created
@@ -201,7 +199,9 @@ pipeline {
                     def passedTests = totalTests - testResults.failCount - testResults.skipCount
                     def failedTests = testResults.failCount
                     def skippedTests = testResults.skipCount
-                    def passRate = totalTests > 0 ? ((passedTests / totalTests) * 100).round(2) : 0
+                    
+                    // FIXED: Use String.format instead of .round()
+                    def passRate = totalTests > 0 ? String.format('%.2f', ((passedTests / totalTests) * 100)) : '0.00'
                     
                     def summary = """
 ================================================
