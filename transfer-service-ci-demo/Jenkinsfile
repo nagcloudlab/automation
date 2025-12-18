@@ -1,20 +1,324 @@
 pipeline {
     agent any
     
+    tools {
+        jdk 'jdk17'
+        maven 'maven3'
+    }
+    
+    options {
+        timestamps()
+        ansiColor('xterm')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+    
+    environment {
+        APP_PORT = "8080"
+        BASE_URL = "http://localhost:${APP_PORT}"
+        APP_PID_FILE = "app.pid"
+        PROTOCOL = "http"
+        HOST = "localhost"
+        PORT = "8080"
+        PROJECT_DIR = "transfer-service-ci-demo"
+    }
+    
     stages {
-        stage('Build') {
+        
+        stage('Checkout & Build') {
             steps {
-              dir('transfer-service-ci-demo/api-tests')  {
-                 sh 'mvn clean test-compile'
-              }
+                echo '=================================================='
+                echo '🔨 Building Application'
+                echo '=================================================='
+                dir("${PROJECT_DIR}") {
+                    sh '''
+                        mvn -B -ntp clean package -DskipTests
+                        
+                        # Verify JAR was created
+                        JAR=$(ls -1 transfer-service/target/*.jar 2>/dev/null | head -n 1)
+                        if [ -f "$JAR" ]; then
+                            echo "✅ JAR created: $JAR"
+                            ls -lh "$JAR"
+                        else
+                            echo "❌ JAR file not found!"
+                            exit 1
+                        fi
+                    '''
+                }
             }
         }
-        stage('Test') {
+        
+        stage('Start Transfer Service') {
             steps {
-              dir('transfer-service-ci-demo/api-tests')  {
-                 sh 'mvn test'
-              }
+                echo '=================================================='
+                echo '🚀 Starting Transfer Service'
+                echo '=================================================='
+                dir("${PROJECT_DIR}") {
+                    sh '''
+                        set -e
+                        
+                        # Kill any existing process on port 8080
+                        lsof -ti:${APP_PORT} | xargs kill -9 2>/dev/null || true
+                        sleep 2
+                        
+                        # Find and start the JAR
+                        JAR=$(ls -1 transfer-service/target/*.jar | head -n 1)
+                        echo "Starting: $JAR on port ${APP_PORT}"
+                        
+                        nohup java -jar "$JAR" --server.port=${APP_PORT} > app.log 2>&1 &
+                        echo $! > ${APP_PID_FILE}
+                        
+                        echo "✅ Application started with PID: $(cat ${APP_PID_FILE})"
+                        
+                        # Wait for health check
+                        echo "Waiting for application to be ready..."
+                        for i in $(seq 1 60); do
+                            if curl -fsS ${BASE_URL}/actuator/health 2>/dev/null | grep -q "UP"; then
+                                echo "✅ Application is UP!"
+                                curl -s ${BASE_URL}/actuator/health
+                                exit 0
+                            fi
+                            echo "⏳ Attempt $i/60..."
+                            sleep 2
+                        done
+                        
+                        echo "❌ Application failed to start!"
+                        echo "Application logs:"
+                        tail -n 100 app.log
+                        exit 1
+                    '''
+                }
             }
+        }
+        
+        stage('Run All Tests') {
+            parallel {
+                
+                stage('API Tests') {
+                    steps {
+                        echo '=================================================='
+                        echo '🧪 Running API Tests (REST Assured)'
+                        echo '=================================================='
+                        dir("${PROJECT_DIR}/api-tests") {
+                            sh """
+                                mvn -B -ntp test -DbaseUrl=${BASE_URL}
+                            """
+                        }
+                    }
+                    post {
+                        always {
+                            echo '📊 Publishing API Test Results'
+                            junit allowEmptyResults: true, 
+                                  testResults: "${PROJECT_DIR}/api-tests/target/surefire-reports/*.xml"
+                        }
+                    }
+                }
+                
+                stage('UI Tests') {
+                    steps {
+                        echo '=================================================='
+                        echo '🎭 Running UI Tests (Playwright)'
+                        echo '=================================================='
+                        dir("${PROJECT_DIR}/ui-tests") {
+                            sh """
+                                mvn -B -ntp test -DbaseUrl=${BASE_URL}
+                            """
+                        }
+                    }
+                    post {
+                        always {
+                            echo '📊 Publishing UI Test Results'
+                            junit allowEmptyResults: true, 
+                                  testResults: "${PROJECT_DIR}/ui-tests/target/surefire-reports/*.xml"
+                            
+                            echo '📸 Archiving UI Test Artifacts'
+                            archiveArtifacts allowEmptyArchive: true, 
+                                           artifacts: "${PROJECT_DIR}/ui-tests/**/playwright-report/**, ${PROJECT_DIR}/ui-tests/**/screenshots/**, ${PROJECT_DIR}/ui-tests/**/videos/**"
+                            
+                            // Publish Playwright HTML Report
+                            publishHTML([
+                                allowMissing: true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: "${PROJECT_DIR}/ui-tests/target/playwright-report",
+                                reportFiles: 'index.html',
+                                reportName: 'Playwright UI Test Report',
+                                reportTitles: 'UI Test Results'
+                            ])
+                        }
+                    }
+                }
+                
+                stage('Performance Tests') {
+                    steps {
+                        echo '=================================================='
+                        echo '⚡ Running Performance Tests (JMeter)'
+                        echo '=================================================='
+                        dir("${PROJECT_DIR}/perf-tests") {
+                            sh """
+                                mvn -B -ntp clean verify \
+                                    -Dprotocol=${PROTOCOL} \
+                                    -Dhost=${HOST} \
+                                    -Dport=${PORT}
+                            """
+                        }
+                    }
+                    post {
+                        always {
+                            echo '📊 Publishing Performance Test Results'
+                            
+                            // Publish JMeter HTML Report
+                            publishHTML([
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: "${PROJECT_DIR}/perf-tests/target/jmeter/reports/transfer_load_test",
+                                reportFiles: 'index.html',
+                                reportName: 'JMeter Performance Report',
+                                reportTitles: 'Performance Test Results'
+                            ])
+                            
+                            // Archive JMeter artifacts
+                            archiveArtifacts allowEmptyArchive: true,
+                                           artifacts: "${PROJECT_DIR}/perf-tests/target/jmeter/results/**/*.jtl, ${PROJECT_DIR}/perf-tests/target/jmeter/logs/**"
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Test Summary') {
+            steps {
+                echo '=================================================='
+                echo '📋 Generating Test Summary'
+                echo '=================================================='
+                script {
+                    // Aggregate test results
+                    def testResults = junit testResults: "${PROJECT_DIR}/**/target/surefire-reports/*.xml", 
+                                           allowEmptyResults: true
+                    
+                    def totalTests = testResults.totalCount
+                    def passedTests = totalTests - testResults.failCount - testResults.skipCount
+                    def failedTests = testResults.failCount
+                    def skippedTests = testResults.skipCount
+                    def passRate = totalTests > 0 ? ((passedTests / totalTests) * 100).round(2) : 0
+                    
+                    def summary = """
+================================================
+📊 TEST EXECUTION SUMMARY
+================================================
+
+Build Information:
+-----------------
+Build Number: ${env.BUILD_NUMBER}
+Build URL: ${env.BUILD_URL}
+Duration: ${currentBuild.durationString}
+
+Test Results:
+------------
+Total Tests:  ${totalTests}
+✅ Passed:    ${passedTests}
+❌ Failed:    ${failedTests}
+⏭️  Skipped:  ${skippedTests}
+📈 Pass Rate: ${passRate}%
+
+Reports Available:
+-----------------
+• Test Results: ${env.BUILD_URL}testReport
+• UI Tests: ${env.BUILD_URL}Playwright_20UI_20Test_20Report
+• Performance: ${env.BUILD_URL}JMeter_20Performance_20Report
+
+================================================
+"""
+                    
+                    echo summary
+                    
+                    // Save summary to file
+                    writeFile file: "${PROJECT_DIR}/test-summary.txt", text: summary
+                    
+                    // Set build description
+                    currentBuild.description = "Tests: ${passedTests}✅ ${failedTests}❌ - Pass Rate: ${passRate}%"
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo '=================================================='
+            echo '🧹 Cleanup: Stopping Application'
+            echo '=================================================='
+            dir("${PROJECT_DIR}") {
+                sh '''
+                    set +e
+                    
+                    if [ -f "${APP_PID_FILE}" ]; then
+                        PID=$(cat ${APP_PID_FILE})
+                        echo "Stopping application with PID: $PID"
+                        kill $PID 2>/dev/null || true
+                        
+                        # Wait for graceful shutdown
+                        for i in $(seq 1 10); do
+                            if ! ps -p $PID > /dev/null 2>&1; then
+                                echo "✅ Application stopped"
+                                break
+                            fi
+                            sleep 1
+                        done
+                        
+                        # Force kill if still running
+                        if ps -p $PID > /dev/null 2>&1; then
+                            echo "Force killing application..."
+                            kill -9 $PID 2>/dev/null || true
+                        fi
+                        
+                        rm -f ${APP_PID_FILE}
+                    fi
+                    
+                    # Also kill by port as backup
+                    lsof -ti:${APP_PORT} | xargs kill -9 2>/dev/null || true
+                    
+                    echo ""
+                    echo "Last 100 lines of application log:"
+                    tail -n 100 app.log || echo "No log file found"
+                '''
+            }
+            
+            echo '📁 Archiving Application Logs'
+            archiveArtifacts allowEmptyArchive: true, 
+                           artifacts: "${PROJECT_DIR}/app.log, ${PROJECT_DIR}/test-summary.txt"
+        }
+        
+        success {
+            echo '=================================================='
+            echo '✅ PIPELINE COMPLETED SUCCESSFULLY!'
+            echo '=================================================='
+            echo 'All tests passed! 🎉'
+            echo ''
+            echo "Reports:"
+            echo "• Test Results: ${env.BUILD_URL}testReport"
+            echo "• UI Report: ${env.BUILD_URL}Playwright_20UI_20Test_20Report"
+            echo "• Performance: ${env.BUILD_URL}JMeter_20Performance_20Report"
+            echo '=================================================='
+        }
+        
+        failure {
+            echo '=================================================='
+            echo '❌ PIPELINE FAILED'
+            echo '=================================================='
+            echo 'Check test reports and logs for details'
+            echo "• Console: ${env.BUILD_URL}console"
+            echo "• Test Results: ${env.BUILD_URL}testReport"
+            echo '=================================================='
+        }
+        
+        unstable {
+            echo '=================================================='
+            echo '⚠️  PIPELINE UNSTABLE'
+            echo '=================================================='
+            echo 'Some tests failed. Check reports:'
+            echo "• Test Results: ${env.BUILD_URL}testReport"
+            echo '=================================================='
         }
     }
 }
