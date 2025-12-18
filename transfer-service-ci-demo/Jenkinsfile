@@ -11,7 +11,9 @@ pipeline {
         }
         stage('Test') {
             steps {
-              echo 'Testing...'
+              dir('transfer-service-ci-demo/api-tests')  {
+                 sh 'mvn test'
+              }
             }
         }
     }
