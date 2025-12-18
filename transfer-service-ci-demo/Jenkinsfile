@@ -1,0 +1,122 @@
+pipeline {
+  agent any
+
+  tools {
+    jdk 'jdk17'
+    maven 'maven3'
+  }
+
+  options {
+    timestamps()
+    ansiColor('xterm')
+    disableConcurrentBuilds()
+  }
+
+  environment {
+    APP_PORT = "8080"
+    BASE_URL = "http://localhost:${APP_PORT}"
+    APP_PID_FILE = "app.pid"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build (skip tests)') {
+      steps {
+        sh """
+          mvn -B -ntp clean package -DskipTests
+        """
+      }
+    }
+
+    stage('Start Transfer Service') {
+      steps {
+        sh """
+          set -e
+          JAR=\$(ls -1 transfer-service/target/*.jar | head -n 1)
+          nohup java -jar "\$JAR" --server.port=${APP_PORT} > app.log 2>&1 &
+          echo \$! > ${APP_PID_FILE}
+
+          echo "Waiting for app to be UP at ${BASE_URL}/actuator/health ..."
+          for i in \$(seq 1 60); do
+            if curl -fsS ${BASE_URL}/actuator/health | grep -q '"UP"'; then
+              echo "App is UP"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "App did not become healthy. Dumping logs:"
+          tail -n 200 app.log || true
+          exit 1
+        """
+      }
+    }
+
+    stage('API Tests (Rest-Assured)') {
+      steps {
+        sh """
+          mvn -B -ntp -pl api-tests test -DbaseUrl=${BASE_URL}
+        """
+      }
+      post {
+        always {
+          junit allowEmptyResults: true, testResults: 'api-tests/target/surefire-reports/*.xml'
+        }
+      }
+    }
+
+    stage('UI Tests (Playwright)') {
+      steps {
+        sh """
+          mvn -B -ntp -pl ui-tests test -DbaseUrl=${BASE_URL}
+        """
+      }
+      post {
+        always {
+          junit allowEmptyResults: true, testResults: 'ui-tests/target/surefire-reports/*.xml'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'ui-tests/**/playwright-report/**, ui-tests/**/screenshots/**, ui-tests/**/videos/**'
+        }
+      }
+    }
+
+    stage('Load Tests (JMeter)') {
+      steps {
+        sh """
+          mvn -B -ntp -pl perf-tests verify -DbaseUrl=${BASE_URL}
+        """
+      }
+      post {
+        always {
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'perf-tests/target/jmeter/**'
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      sh """
+        set +e
+        if [ -f "${APP_PID_FILE}" ]; then
+          PID=\$(cat ${APP_PID_FILE})
+          echo "Stopping app PID=\$PID"
+          kill \$PID || true
+        fi
+        echo "Last app logs:"
+        tail -n 200 app.log || true
+      """
+    }
+    success {
+      echo "Pipeline completed successfully."
+    }
+    failure {
+      echo "Pipeline failed. Check test reports + app.log."
+    }
+  }
+}

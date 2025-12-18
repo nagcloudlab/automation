@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.demo</groupId>
+        <artifactId>transfer-service-ci-demo</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>perf-tests</artifactId>
+
+    <build>
+        <plugins>
+
+            <!-- Run JMeter via CLI (NO jmeter-maven-plugin) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+
+                <executions>
+                    <execution>
+                        <id>run-jmeter</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>jmeter</executable>
+                            <arguments>
+                                <argument>-n</argument>
+                                <argument>-t</argument>
+                                <argument>${project.basedir}/src/test/jmeter/transfer_load_test.jmx</argument>
+                                <argument>-JbaseUrl=${baseUrl}</argument>
+                                <argument>-l</argument>
+                                <argument>${project.build.directory}/results.jtl</argument>
+                                <argument>-e</argument>
+                                <argument>-o</argument>
+                                <argument>${project.build.directory}/report</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
